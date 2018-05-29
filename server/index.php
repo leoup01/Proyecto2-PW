@@ -1,11 +1,10 @@
 <?php
     require("Toro.php");
-
-
-    class DBHandlerProduct {
+    
+    class UsuariosHandler {
         function init() {
             try {
-                $dbh = new PDO('sqlite:test.db');
+                $dbh = new PDO('sqlite:proyecto2.db');
                 return $dbh;
             } catch (Exception $e) {
                 die("Unable to connect: " . $e->getMessage());
@@ -16,10 +15,10 @@
             $dbh = $this->init();
             try {
                 if ($id!=null) {
-                    $stmt = $dbh->prepare("SELECT * FROM product WHERE product_receipt_id = :id");
+                    $stmt = $dbh->prepare("SELECT * FROM usuarios WHERE userId = :id");
                     $stmt->bindParam(':id', $id);
                 } else {
-                    $stmt = $dbh->prepare("SELECT * FROM product");
+                    $stmt = $dbh->prepare("SELECT * FROM usuarios");
                 }
                 $stmt->execute();
                 $data = Array();
@@ -36,17 +35,25 @@
             $dbh = $this->init();
             try {
                 $_PUT=json_decode(file_get_contents('php://input'), True);
-                $product_quantity = $_PUT['product_quantity'];
-                $product_description = $_PUT['product_description'];
-                $product_unit_value = $_PUT['product_unit_value'];
-                $product_receipt_id = $_PUT['product_receipt_id'];
+                $userId = $_PUT['userId'];
+                $password = $_PUT['password'];
+                $nombre = $_PUT['nombre'];
+                $correo = $_PUT['correo'];
+                $pais = $_PUT['pais'];
+                $edad = $_PUT['edad'];
+                $genero = $_PUT['genero'];
+                $rol = $_PUT['rol'];
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("INSERT INTO product (product_quantity,product_description,product_unit_value,product_receipt_id)
-                                                VALUES (:product_quantity,:product_description,:product_unit_value,:product_receipt_id)");
-                $stmt->bindParam(':product_quantity', $product_quantity);
-                $stmt->bindParam(':product_description', $product_description);
-                $stmt->bindParam(':product_unit_value', $product_unit_value);
-                $stmt->bindParam(':product_receipt_id', $product_receipt_id);
+                $stmt = $dbh->prepare("INSERT INTO usuarios (userId,password,nombre,correo,pais,edad,genero,rol)
+                                                VALUES (:userId,:password,:nombre,:correo,:pais,:edad,:genero,:rol)");
+                $stmt->bindParam(':userId', $userId);
+                $stmt->bindParam(':password', $password);
+                $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':correo', $correo);
+                $stmt->bindParam(':pais', $pais);
+                $stmt->bindParam(':edad', $edad);
+                $stmt->bindParam(':genero', $genero);
+                $stmt->bindParam(':rol', $rol);
                 $dbh->beginTransaction();
                 $stmt->execute();
                 $dbh->commit();
@@ -61,7 +68,7 @@
             $dbh = $this->init();
             try {
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("DELETE FROM product WHERE product_id = :id");
+                $stmt = $dbh->prepare("DELETE FROM usuarios WHERE userId = :id");
                 $stmt->bindParam(':id', $id);
                 $dbh->beginTransaction();
                 $stmt->execute();
@@ -80,19 +87,24 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
-                $product_quantity = $_POST['product_quantity'];
-                $product_description = $_POST['product_description'];
-                $product_unit_value = $_POST['product_unit_value'];
-                $product_receipt_id = $_POST['product_receipt_id'];
+                $password = $_POST['password'];
+                $nombre = $_POST['nombre'];
+                $correo = $_POST['correo'];
+                $pais = $_POST['pais'];
+                $edad = $_POST['edad'];
+                $genero = $_POST['genero'];
+                $rol = $_POST['rol'];
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("UPDATE product SET product_quantity=:product_quantity,
-                                        product_description=:product_description, product_unit_value=:product_unit_value,
-                                        product_receipt_id=:product_receipt_id WHERE product_id = :id");
+                $stmt = $dbh->prepare("UPDATE usuarios SET password=:password, nombre=:nombre, correo=:correo
+                                        pais=:pais, edad=:edad, genero=:genero, rol=:rol WHERE userId = :id");
                 $stmt->bindParam(':id', $id);
-                $stmt->bindParam(':product_quantity', $product_quantity);
-                $stmt->bindParam(':product_description', $product_description);
-                $stmt->bindParam(':product_unit_value', $product_unit_value);
-                $stmt->bindParam(':product_receipt_id', $product_receipt_id);
+                $stmt->bindParam(':password', $password);
+                $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':correo', $correo);
+                $stmt->bindParam(':pais', $pais);
+                $stmt->bindParam(':edad', $edad);
+                $stmt->bindParam(':genero', $genero);
+                $stmt->bindParam(':rol', $rol);
                 $dbh->beginTransaction();
                 $stmt->execute();
                 $dbh->commit();
@@ -105,23 +117,24 @@
 
     }//Fin de clase
 
-    class DBHandler {
+    class AgenciasHandler {
         function init() {
             try {
-                $dbh = new PDO('sqlite:test.db');
+                $dbh = new PDO('sqlite:proyecto2.db');
                 return $dbh;
             } catch (Exception $e) {
                 die("Unable to connect: " . $e->getMessage());
             }
         }
+
         function get($id=null) {
             $dbh = $this->init();
             try {
                 if ($id!=null) {
-                    $stmt = $dbh->prepare("SELECT * FROM receipt WHERE receipt_id = :id");
+                    $stmt = $dbh->prepare("SELECT * FROM agencias WHERE idAgencia = :id");
                     $stmt->bindParam(':id', $id);
                 } else {
-                    $stmt = $dbh->prepare("SELECT * FROM receipt");
+                    $stmt = $dbh->prepare("SELECT * FROM agencias");
                 }
                 $stmt->execute();
                 $data = Array();
@@ -133,35 +146,24 @@
                 echo "Failed: " . $e->getMessage();
             }
         }
-        function getLast() {
-            $dbh = $this->init();
-            try {
-                $stmt = $dbh->prepare("SELECT * FROM receipt ORDER BY receipt_id DESC LIMIT 1");
-                $stmt->execute();
-                $data = Array();
-                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $data[] = $result;
-                }
-                echo json_encode($data);
-            } catch (Exception $e) {
-                echo "Failed: " . $e->getMessage();
-            }
-        }
+
         function put($id=null) {
             $dbh = $this->init();
             try {
                 $_PUT=json_decode(file_get_contents('php://input'), True);
-                $receipt_client = $_PUT['receipt_client'];
-                $receipt_taxes = $_PUT['receipt_taxes'];
-                $receipt_total = $_PUT['receipt_total'];
-                $receipt_date = $_PUT['receipt_date'];
+                $nombre = $_PUT['nombre'];
+                $pais = $_PUT['pais'];
+                $especialidad = $_PUT['especialidad'];
+                $telefono = $_PUT['telefono'];
+                $correo = $_PUT['correo'];
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("INSERT INTO receipt (receipt_client,receipt_taxes,receipt_total,receipt_date)
-                                                VALUES (:receipt_client,:receipt_taxes,:receipt_total,:receipt_date)");
-                $stmt->bindParam(':receipt_client', $receipt_client);
-                $stmt->bindParam(':receipt_taxes', $receipt_taxes);
-                $stmt->bindParam(':receipt_total', $receipt_total);
-                $stmt->bindParam(':receipt_date', $receipt_date);
+                $stmt = $dbh->prepare("INSERT INTO agencias (nombre,pais,especialidad,telefono,correo)
+                                                VALUES (:nombre,:pais,:especialidad,:telefono,:correo)");
+                $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':pais', $pais);
+                $stmt->bindParam(':especialidad', $especialidad);
+                $stmt->bindParam(':telefono', $telefono);
+                $stmt->bindParam(':correo', $correo);
                 $dbh->beginTransaction();
                 $stmt->execute();
                 $dbh->commit();
@@ -175,7 +177,7 @@
             $dbh = $this->init();
             try {
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("DELETE FROM receipt WHERE receipt_id = :id");
+                $stmt = $dbh->prepare("DELETE FROM agencias WHERE idAgencia = :id");
                 $stmt->bindParam(':id', $id);
                 $dbh->beginTransaction();
                 $stmt->execute();
@@ -194,21 +196,21 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
-                else if ($_POST['method']=='getLast')
-                    return $this->getLast();
-                $receipt_client = $_POST['receipt_client'];
-                $receipt_taxes = $_POST['receipt_taxes'];
-                $receipt_total = $_POST['receipt_total'];
-                $receipt_date = $_POST['receipt_date'];
+                $nombre = $_POST['nombre'];
+                $pais = $_POST['pais'];
+                $especialidad = $_POST['especialidad'];
+                $telefono = $_POST['telefono'];
+                $correo = $_POST['correo'];
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("UPDATE receipt SET receipt_client=:receipt_client,
-                                        receipt_taxes=:receipt_taxes, receipt_total=:receipt_total,
-                                        receipt_date=:receipt_date WHERE receipt_id = :id");
+                $stmt = $dbh->prepare("UPDATE agencias SET nombre=:nombre,
+                                        pais=:pais, especialidad=:especialidad,
+                                        telefono=:telefono, correo=:correo WHERE idAgencia = :id");
                 $stmt->bindParam(':id', $id);
-                $stmt->bindParam(':receipt_client', $receipt_client);
-                $stmt->bindParam(':receipt_taxes', $receipt_taxes);
-                $stmt->bindParam(':receipt_total', $receipt_total);
-                $stmt->bindParam(':receipt_date', $receipt_date);
+                $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':pais', $pais);
+                $stmt->bindParam(':especialidad', $especialidad);
+                $stmt->bindParam(':telefono', $telefono);
+                $stmt->bindParam(':correo', $correo);
                 $dbh->beginTransaction();
                 $stmt->execute();
                 $dbh->commit();
@@ -219,10 +221,744 @@
             }
         }
     }
+
+    class BoletinesHandler {
+        function init() {
+            try {
+                $dbh = new PDO('sqlite:proyecto2.db');
+                return $dbh;
+            } catch (Exception $e) {
+                die("Unable to connect: " . $e->getMessage());
+            }
+        }
+
+        function get($id=null) {
+            $dbh = $this->init();
+            try {
+                if ($id!=null) {
+                    $stmt = $dbh->prepare("SELECT * FROM boletines WHERE idBoletin = :id");
+                    $stmt->bindParam(':id', $id);
+                } else {
+                    $stmt = $dbh->prepare("SELECT * FROM boletines");
+                }
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function put($id=null) {
+            $dbh = $this->init();
+            try {
+                $_PUT=json_decode(file_get_contents('php://input'), True);
+                $fecha = $_PUT['fecha'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("INSERT INTO boletines (fecha)
+                                                VALUES (:fecha)");
+                $stmt->bindParam(':fecha', $fecha);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+        function delete($id=null) {
+            $dbh = $this->init();
+            try {
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("DELETE FROM boletines WHERE idBoletin = :id");
+                $stmt->bindParam(':id', $id);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+        function post($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                if ($_POST['method']=='put')
+                    return $this->put($id);
+                else if ($_POST['method']=='delete')
+                    return $this->delete($id);
+                $fecha = $_POST['fecha'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE boletines SET fecha=:fecha WHERE idBoletin = :id");
+                $stmt->bindParam(':id', $id);
+                $stmt->bindParam(':fecha', $fecha);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+    }
+
+    class PeriodistasHandler {
+        function init() {
+            try {
+                $dbh = new PDO('sqlite:proyecto2.db');
+                return $dbh;
+            } catch (Exception $e) {
+                die("Unable to connect: " . $e->getMessage());
+            }
+        }
+
+        function get($id=null) {
+            $dbh = $this->init();
+            try {
+                if ($id!=null) {
+                    $stmt = $dbh->prepare("SELECT * FROM periodistas WHERE idPeriodista = :id");
+                    $stmt->bindParam(':id', $id);
+                } else {
+                    $stmt = $dbh->prepare("SELECT * FROM periodistas");
+                }
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function put($id=null) {
+            $dbh = $this->init();
+            try {
+                $_PUT=json_decode(file_get_contents('php://input'), True);                
+                $telefono = $_PUT['telefono'];
+                $ciudad = $_PUT['ciudad'];
+                $usuario = $_PUT['usuario'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("INSERT INTO periodistas (telefono,ciudad,usuario,)
+                                                VALUES (:telefono,:ciudad,:usuario)");
+                $stmt->bindParam(':telefono', $telefono);
+                $stmt->bindParam(':ciudad', $ciudad);
+                $stmt->bindParam(':usuario', $usuario);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+        function delete($id=null) {
+            $dbh = $this->init();
+            try {
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("DELETE FROM periodistas WHERE idPeriodista = :id");
+                $stmt->bindParam(':id', $id);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+        function post($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                if ($_POST['method']=='put')
+                    return $this->put($id);
+                else if ($_POST['method']=='delete')
+                    return $this->delete($id);
+                $telefono = $_POST['telefono'];
+                $ciudad = $_POST['ciudad'];
+                $usuario = $_POST['usuario'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE periodistas SET telefono=:telefono,
+                                        ciudad=:ciudad, usuario=:usuario WHERE idPeriodista = :id");
+                $stmt->bindParam(':id', $id);
+                $stmt->bindParam(':telefono', $telefono);
+                $stmt->bindParam(':ciudad', $ciudad);
+                $stmt->bindParam(':usuario', $usuario);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+    }
+
+    class CategoriasHandler {
+        function init() {
+            try {
+                $dbh = new PDO('sqlite:proyecto2.db');
+                return $dbh;
+            } catch (Exception $e) {
+                die("Unable to connect: " . $e->getMessage());
+            }
+        }
+
+        function get($id=null) {
+            $dbh = $this->init();
+            try {
+                if ($id!=null) {
+                    $stmt = $dbh->prepare("SELECT * FROM categorias WHERE idCategoria = :id");
+                    $stmt->bindParam(':id', $id);
+                } else {
+                    $stmt = $dbh->prepare("SELECT * FROM categorias");
+                }
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function put($id=null) {
+            $dbh = $this->init();
+            try {
+                $_PUT=json_decode(file_get_contents('php://input'), True);                
+                $nombre = $_PUT['nombre'];
+                $zona = $_PUT['zona'];
+                $encargado = $_PUT['encargado'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("INSERT INTO categorias (nombre,zona,encargado)
+                                                VALUES (:nombre,:zona,:encargado)");
+                $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':zona', $zona);
+                $stmt->bindParam(':encargado', $encargado);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+        function delete($id=null) {
+            $dbh = $this->init();
+            try {
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("DELETE FROM categorias WHERE idCategoria = :id");
+                $stmt->bindParam(':id', $id);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+        function post($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                if ($_POST['method']=='put')
+                    return $this->put($id);
+                else if ($_POST['method']=='delete')
+                    return $this->delete($id);
+                $nombre = $_POST['nombre'];
+                $zona = $_POST['zona'];
+                $encargado = $_POST['encargado'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE categorias SET nombre=:nombre,
+                                        zona=:zona, encargado=:encargado WHERE idCategoria = :id");
+                $stmt->bindParam(':id', $id);
+                $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':zona', $zona);
+                $stmt->bindParam(':encargado', $encargado);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+    }
+
+    class NoticiasHandler {
+        function init() {
+            try {
+                $dbh = new PDO('sqlite:proyecto2.db');
+                return $dbh;
+            } catch (Exception $e) {
+                die("Unable to connect: " . $e->getMessage());
+            }
+        }
+
+        function get($id=null) {
+            $dbh = $this->init();
+            try {
+                if ($id!=null) {
+                    $stmt = $dbh->prepare("SELECT * FROM noticias WHERE idNoticia = :id");
+                    $stmt->bindParam(':id', $id);
+                } else {
+                    $stmt = $dbh->prepare("SELECT * FROM noticias");
+                }
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function put($id=null) {
+            $dbh = $this->init();
+            try {
+                $_PUT=json_decode(file_get_contents('php://input'), True);
+                $fecha = $_PUT['fecha'];
+                $lugar = $_PUT['lugar'];
+                $titulo = $_PUT['titulo'];
+                $cuerpo = $_PUT['cuerpo'];
+                $periodista = $_PUT['periodista'];
+                $agencia = $_PUT['agencia'];
+                $boletin = $_PUT['boletin'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("INSERT INTO noticias (fecha,lugar,titulo,cuerpo,periodista,agencia,boletin)
+                                                VALUES (:fecha,:lugar,:titulo,:cuerpo,:periodista,:agencia,:boletin)");
+                $stmt->bindParam(':fecha', $fecha);
+                $stmt->bindParam(':lugar', $lugar);
+                $stmt->bindParam(':titulo', $titulo);
+                $stmt->bindParam(':cuerpo', $cuerpo);
+                $stmt->bindParam(':periodista', $periodista);
+                $stmt->bindParam(':agencia', $agencia);
+                $stmt->bindParam(':boletin', $boletin);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function delete($id=null) {
+            $dbh = $this->init();
+            try {
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("DELETE FROM noticias WHERE idNoticia = :id");
+                $stmt->bindParam(':id', $id);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+        function post($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                if ($_POST['method']=='put')
+                    return $this->put($id);
+                else if ($_POST['method']=='delete')
+                    return $this->delete($id);
+                $fecha = $_POST['fecha'];
+                $lugar = $_POST['lugar'];
+                $titulo = $_POST['titulo'];
+                $cuerpo = $_POST['cuerpo'];
+                $periodista = $_POST['periodista'];
+                $agencia = $_POST['agencia'];
+                $boletin = $_POST['boletin'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE noticias SET fecha=:fecha, lugar=:lugar, titulo=:titulo, cuerpo=:cuerpo,
+                                        periodista=:periodista, agencia=:agencia, boletin=:boletin WHERE idNoticia = :id");
+                $stmt->bindParam(':id', $id);
+                $stmt->bindParam(':fecha', $fecha);
+                $stmt->bindParam(':lugar', $lugar);
+                $stmt->bindParam(':titulo', $titulo);
+                $stmt->bindParam(':cuerpo', $cuerpo);
+                $stmt->bindParam(':periodista', $periodista);
+                $stmt->bindParam(':agencia', $agencia);
+                $stmt->bindParam(':boletin', $boletin);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+    }
+
+    class ClasificadasHandler {
+        function init() {
+            try {
+                $dbh = new PDO('sqlite:proyecto2.db');
+                return $dbh;
+            } catch (Exception $e) {
+                die("Unable to connect: " . $e->getMessage());
+            }
+        }
+
+        function get($id=null) {
+            $dbh = $this->init();
+            try {
+                if(isset($_GET['noticia']) && isset($_GET['categoria'])){
+                    $noticia = $_GET['noticia'];
+                    $categoria = $_GET['categoria'];
+                    $stmt = $dbh->prepare("SELECT * FROM clasificadas WHERE noticia = :noticia AND categoria = :categoria");
+                    $stmt->bindParam(':noticia', $noticia);
+                    $stmt->bindParam(':categoria', $categoria);
+                }else if(isset($_GET['noticia'])){
+                    $noticia = $_GET['noticia'];
+                    $stmt = $dbh->prepare("SELECT * FROM clasificadas WHERE noticia = :noticia");
+                    $stmt->bindParam(':noticia', $noticia);
+                }
+                else if(isset($_GET['categoria'])){
+                    $categoria = $_GET['categoria'];
+                    $stmt = $dbh->prepare("SELECT * FROM clasificadas WHERE categoria = :categoria");
+                    $stmt->bindParam(':categoria', $categoria);
+                } else {
+                    $stmt = $dbh->prepare("SELECT * FROM clasificadas");
+                }
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function put($id=null) {
+            $dbh = $this->init();
+            try {
+                $_PUT=json_decode(file_get_contents('php://input'), True);                
+                $noticia = $_PUT['noticia'];
+                $categoria = $_PUT['categoria'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("INSERT INTO clasificadas (noticia,categoria)
+                                                VALUES (:noticia,:categoria)");
+                $stmt->bindParam(':noticia', $noticia);
+                $stmt->bindParam(':categoria', $categoria);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function delete($id=null) {
+            $dbh = $this->init();
+            try {
+                $_DELETE=json_decode(file_get_contents('php://input'), True);
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $noticia = $_DELETE['noticia'];
+                $categoria = $_DELETE['categoria'];
+                $stmt = $dbh->prepare("DELETE FROM clasificadas WHERE noticia = :noticia AND categoria = :categoria");
+                $stmt->bindParam(':noticia', $noticia);
+                $stmt->bindParam(':categoria', $categoria);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function post($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                if ($_POST['method']=='put')
+                    return $this->put($id);
+                else if ($_POST['method']=='delete')
+                    return $this->delete($id);
+                $noticia = $_POST['noticia'];
+                $categoria = $_POST['categoria'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE clasificadas SET noticia=:noticia, categoria =:categoria
+                                        WHERE noticia = :noticia AND categoria = :categoria");
+                $stmt->bindParam(':noticia', $noticia);
+                $stmt->bindParam(':categoria', $categoria);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+    }
+
+    class PreferidasHandler {
+        function init() {
+            try {
+                $dbh = new PDO('sqlite:proyecto2.db');
+                return $dbh;
+            } catch (Exception $e) {
+                die("Unable to connect: " . $e->getMessage());
+            }
+        }
+
+        function get($id=null) {
+            $dbh = $this->init();
+            try {
+                if(isset($_GET['usuario']) && isset($_GET['categoria'])){
+                    $usuario = $_GET['usuario'];
+                    $categoria = $_GET['categoria'];
+                    $stmt = $dbh->prepare("SELECT * FROM preferidas WHERE usuario = :usuario AND categoria = :categoria");
+                    $stmt->bindParam(':usuario', $usuario);
+                    $stmt->bindParam(':categoria', $categoria);
+                }else if(isset($_GET['usuario'])){
+                    $usuario = $_GET['usuario'];
+                    $stmt = $dbh->prepare("SELECT * FROM preferidas WHERE usuario = :usuario");
+                    $stmt->bindParam(':usuario', $usuario);
+                }
+                else if(isset($_GET['categoria'])){
+                    $categoria = $_GET['categoria'];
+                    $stmt = $dbh->prepare("SELECT * FROM preferidas WHERE categoria = :categoria");
+                    $stmt->bindParam(':categoria', $categoria);
+                } else {
+                    $stmt = $dbh->prepare("SELECT * FROM preferidas");
+                }
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function put($id=null) {
+            $dbh = $this->init();
+            try {
+                $_PUT=json_decode(file_get_contents('php://input'), True);                
+                $usuario = $_PUT['usuario'];
+                $categoria = $_PUT['categoria'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("INSERT INTO preferidas (usuario,categoria)
+                                                VALUES (:usuario,:categoria)");
+                $stmt->bindParam(':usuario', $usuario);
+                $stmt->bindParam(':categoria', $categoria);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function delete($id=null) {
+            $dbh = $this->init();
+            try {
+                $_DELETE=json_decode(file_get_contents('php://input'), True);
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $usuario = $_DELETE['usuario'];
+                $categoria = $_DELETE['categoria'];
+                $stmt = $dbh->prepare("DELETE FROM preferidas WHERE usuario = :usuario AND categoria = :categoria");
+                $stmt->bindParam(':usuario', $usuario);
+                $stmt->bindParam(':categoria', $categoria);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function post($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                if ($_POST['method']=='put')
+                    return $this->put($id);
+                else if ($_POST['method']=='delete')
+                    return $this->delete($id);
+                $usuario = $_POST['usuario'];
+                $categoria = $_POST['categoria'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE preferidas SET usuario=:usuario, categoria =:categoria
+                                        WHERE usuario = :usuario AND categoria = :categoria");
+                $stmt->bindParam(':usuario', $usuario);
+                $stmt->bindParam(':categoria', $categoria);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+    }
+
+    class VistosHandler {
+        function init() {
+            try {
+                $dbh = new PDO('sqlite:proyecto2.db');
+                return $dbh;
+            } catch (Exception $e) {
+                die("Unable to connect: " . $e->getMessage());
+            }
+        }
+
+        function get($id=null) {
+            $dbh = $this->init();
+            try {
+                if(isset($_GET['usuario']) && isset($_GET['boletin'])){
+                    $usuario = $_GET['usuario'];
+                    $boletin = $_GET['boletin'];
+                    $stmt = $dbh->prepare("SELECT * FROM vistos WHERE usuario = :usuario AND boletin = :boletin");
+                    $stmt->bindParam(':usuario', $usuario);
+                    $stmt->bindParam(':boletin', $boletin);
+                }else if(isset($_GET['usuario'])){
+                    $usuario = $_GET['usuario'];
+                    $stmt = $dbh->prepare("SELECT * FROM vistos WHERE usuario = :usuario");
+                    $stmt->bindParam(':usuario', $usuario);
+                }
+                else if(isset($_GET['boletin'])){
+                    $boletin = $_GET['boletin'];
+                    $stmt = $dbh->prepare("SELECT * FROM vistos WHERE boletin = :boletin");
+                    $stmt->bindParam(':boletin', $boletin);
+                } else {
+                    $stmt = $dbh->prepare("SELECT * FROM vistos");
+                }
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function put($id=null) {
+            $dbh = $this->init();
+            try {
+                $_PUT=json_decode(file_get_contents('php://input'), True);                
+                $usuario = $_PUT['usuario'];
+                $boletin = $_PUT['boletin'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("INSERT INTO vistos (usuario,boletin)
+                                                VALUES (:usuario,:boletin)");
+                $stmt->bindParam(':usuario', $usuario);
+                $stmt->bindParam(':boletin', $boletin);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function delete($id=null) {
+            $dbh = $this->init();
+            try {
+                $_DELETE=json_decode(file_get_contents('php://input'), True);
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $usuario = $_DELETE['usuario'];
+                $boletin = $_DELETE['boletin'];
+                $stmt = $dbh->prepare("DELETE FROM vistos WHERE usuario = :usuario AND boletin = :boletin");
+                $stmt->bindParam(':usuario', $usuario);
+                $stmt->bindParam(':boletin', $boletin);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function post($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                if ($_POST['method']=='put')
+                    return $this->put($id);
+                else if ($_POST['method']=='delete')
+                    return $this->delete($id);
+                $usuario = $_POST['usuario'];
+                $boletin = $_POST['boletin'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE vistos SET usuario=:usuario, boletin =:boletin
+                                        WHERE usuario = :usuario AND boletin = :boletin");
+                $stmt->bindParam(':usuario', $usuario);
+                $stmt->bindParam(':boletin', $boletin);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+    }
+
     Toro::serve(array(
-        "/receipt" => "DBHandler",
-        "/receipt/:alpha" => "DBHandler",
-        "/product" => "DBHandlerProduct",
-        "/product/:alpha" => "DBHandlerProduct",
+        "/agencias" => "AgenciasHandler",
+        "/agencias/:alpha" => "AgenciasHandler",
+        "/boletines" => "BoletinesHandler",
+        "/boletines/:alpha" => "BoletinesHandler",
+        "/categorias" => "CategoriasHandler",
+        "/categorias/:alpha" => "CategoriasHandler",
+        "/clasificadas" => "ClasificadasHandler",
+        "/clasificadas/:alpha" => "ClasificadasHandler",
+        "/noticias" => "NoticiasHandler",
+        "/noticias/:alpha" => "NoticiasHandler",
+        "/periodistas" => "PeridistasHandler",
+        "/periodistas/:alpha" => "PeridistasHandler",
+        "/preferidas" => "PreferidasHandler",
+        "/preferidas/:alpha" => "PreferidasHandler",
+        "/usuarios" => "UsuariosHandler",
+        "/usuarios/:alpha" => "UsuariosHandler",
+        "/vistos" => "VistosHandler",
+        "/vistos/:alpha" => "VistosHandler",
     ));
 ?>
