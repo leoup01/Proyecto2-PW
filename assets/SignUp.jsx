@@ -10,13 +10,13 @@ const byPropKey = (propertyName, value) => () => ({
 const INITIAL_STATE = {
   email: '',
   password: '',
-  error: null,
+  error: "Luego de registrarse será redirigido a la página de login",
 };
 class SignUp extends React.Component {
      constructor(props) {
     super(props);
-
     this.state = { ...INITIAL_STATE };
+    this.handleInsertUsuario = this.handleInsertUsuario.bind(this);
   }
 
   onSubmit = (event) => {
@@ -29,16 +29,37 @@ class SignUp extends React.Component {
       history,
     } = this.props;
 
-    auth.doSignInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.DASHBOARD);
-      })
-      .catch(error => {
-        this.setState(byPropKey('error', error));
-      });
+    console.log("onSubmit");
+    console.log(this.props);
+    console.log(this.state);
+
+    this.handleInsertUsuario(this.state.email, this.state.password);
 
     event.preventDefault();
+  }
+
+  handleInsertUsuario (username, password){
+    console.log("INSERT "+username+" "+password);
+    fetch("/server/index.php/usuarios/1",{
+            method: "post",
+            headers: {'Content-Type': 'application/json',
+                               'Content-Length': 20},
+            body: JSON.stringify({
+                method: 'put',
+                userId: username,
+                password: password,
+                rol:"Normal"
+                       })
+    }).then((response) => {
+            localStorage.setItem('regres', response.json());
+            window.location.href = "/login";
+           //this.props.handleChangeData();
+           //console.log("INSERT");
+           //console.log(this.props);
+           //console.log(this.state);
+           //aux = this.handleGetLast();
+         }
+    );
   }
 
   render() {
@@ -78,7 +99,7 @@ class SignUp extends React.Component {
                 Ingresar
               </Button>
             </div>
-            { error && <p>{error.message}</p> }
+            { error && <p>{error}</p> }
           </Form>
 
           <hr/>

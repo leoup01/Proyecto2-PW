@@ -29,20 +29,9 @@ class Login extends React.Component {
     const {
       history,
     } = this.props;
-    console.log("onSubmit");
-    console.log(this.props);
-    console.log(this.state);
+
     this.handleGetUsuario(this.state.email);
-    /*
-    auth.doSignInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.DASHBOARD);
-      })
-      .catch(error => {
-        this.setState(byPropKey('error', error));
-      });
-    */
+
     event.preventDefault();
   }
 
