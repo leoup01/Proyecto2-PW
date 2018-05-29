@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   password: '',
   error: null,
 };
-class Login extends React.Component {
+class SignUp extends React.Component {
      constructor(props) {
     super(props);
 
@@ -29,8 +29,6 @@ class Login extends React.Component {
       history,
     } = this.props;
 
-    console.log(this.state);
-    /*
     auth.doSignInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState(() => ({ ...INITIAL_STATE }));
@@ -39,7 +37,7 @@ class Login extends React.Component {
       .catch(error => {
         this.setState(byPropKey('error', error));
       });
-    */
+
     event.preventDefault();
   }
 
@@ -85,7 +83,7 @@ class Login extends React.Component {
 
           <hr/>
           <div className="center-flex">
-            <Button href="/signup" className="button-sm button-5 center-flex">No tiene una cuenta, Registrarse</Button>
+            <Button href="/login" className="button-sm button-5 center-flex">Ya tiene una cuenta, ingrese al sistema</Button>
           </div>
         </div>
       </div>
@@ -94,4 +92,4 @@ class Login extends React.Component {
   }
  }
 
-ReactDOM.render(<Login/>, document.getElementById('root'));
+ReactDOM.render(<SignUp/>, document.getElementById('root'));

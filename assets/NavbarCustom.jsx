@@ -36,7 +36,7 @@ class NavbarCustom extends React.Component {
                 <b><NavLink className="text-white" href="/">Categorías</NavLink></b>
               </NavItem>
               <NavItem>
-                <b><NavLink className="text-white" href="/">Periodistas</NavLink></b>
+                <b><NavLink className="text-white" href="/periodistas">Periodistas</NavLink></b>
               </NavItem>
               <NavItem>
                 <b><NavLink className="text-white" href="/">Agencias</NavLink></b>
