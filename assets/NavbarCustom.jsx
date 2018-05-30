@@ -13,8 +13,10 @@ class NavbarCustom extends React.Component {
     constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);
+    this.handleGetRol = this.handleGetRol.bind(this);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      rol: this.handleGetRol()
     };
   }
   toggle() {
@@ -22,7 +24,26 @@ class NavbarCustom extends React.Component {
       isOpen: !this.state.isOpen
     });
   }
+
+  handleGetRol () {
+          const user = localStorage.getItem('userIdLS');
+          console.log("user: "+user);
+          if(user !== null){
+            fetch('/server/index.php/usuarios/'+ user)
+             .then((response) => {
+                return response.json()
+             })
+             .then((data) => {
+                this.setState({ rol: data[0].rol });
+              });
+          }
+  }
   render() {
+    const navbarItemAdmin = (this.state.rol === 'Administrador')?
+                    <NavItem>
+                      <b><NavLink className="text-white" href="/usuarios">Usuarios</NavLink></b>
+                    </NavItem>
+                    :null;
     return (
         <Navbar dark expand="md">
           <b><NavbarBrand href="/">Inicio</NavbarBrand></b>
@@ -44,6 +65,7 @@ class NavbarCustom extends React.Component {
               <NavItem>
                 <b><NavLink className="text-white" href="/micuenta">Mi Cuenta</NavLink></b>
               </NavItem>
+              {navbarItemAdmin}
             </Nav>
             <Nav className="ml-auto" navbar>
               <Form inline>
