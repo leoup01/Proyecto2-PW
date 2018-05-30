@@ -24,6 +24,7 @@ class MiCuentaForm extends React.Component {
       this.handleUpdate = this.handleUpdate.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
       this.handleFields = this.handleFields.bind(this);
+      this.handleUpdateTest = this.handleUpdateTest.bind(this);
       //this.handleGetLast = this.handleGetLast.bind(this);
     }
     
@@ -34,7 +35,7 @@ class MiCuentaForm extends React.Component {
        this.setState({correo:nextProps.usuario.correo});
        this.setState({edad:nextProps.usuario.edad});
        this.setState({pais:nextProps.usuario.pais});
-       this.setState({genero:nextProps.usuario.edad});
+       this.setState({genero:nextProps.usuario.genero});
        this.setState({rol:nextProps.usuario.rol});
        //console.log("NEXTPROPS");
        //console.log(this.state);
@@ -67,6 +68,32 @@ class MiCuentaForm extends React.Component {
            //this.props.handleChangeReceipt(this.state);
            console.log("UPDATED");
            this.forceUpdate();
+         }
+    );
+    }
+
+    handleUpdateTest() {
+        console.log("UPDATETEST");
+        fetch("/server/index.php/usuarios/"+this.state.userId,{
+            method: "post",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                method: 'posttest',
+                password: this.state.password,
+                nombre: this.state.nombre,
+                correo: this.state.correo,
+                pais: this.state.pais,
+                edad: this.state.edad,
+                genero: this.state.genero,
+                rol: this.state.rol
+        })
+     }).then((response) => {
+           this.props.handleChangeData();
+           //console.log(this.props);
+           //console.log(this.state);
+           //this.props.handleChangeReceipt(this.state);
+           console.log("UPDATED TEST");
+           //this.forceUpdate();
          }
     );
     }
@@ -116,10 +143,10 @@ class MiCuentaForm extends React.Component {
                   </Col>
                   <Col sm="12" md="12" lg="4" xl="4">
                     <div className="form-group">
-                      <Label for="userIdInput" className="form-label">Contraseña</Label>  
+                      <Label for="passwordInput" className="form-label">Contraseña</Label>  
                           <Input
                             type="password"
-                            name="userId"
+                            name="password"
                             className="form-control"
                             value={this.state.password}
                             onChange={this.handleFields}/> 
@@ -205,7 +232,7 @@ class MiCuentaForm extends React.Component {
                 </Row>
                 
                 <Input type="hidden" name="id" value={this.state.userId}/>
-                     <Button onClick={this.handleUpdate} className="button button2">Actualizar mi cuenta</Button>
+                     <Button onClick={this.handleUpdateTest} className="button button2">Actualizar mi cuenta</Button>
                      <Button onClick={this.handleDelete} className="button button3">Eliminar mi cuenta</Button>
               </Form>
           </div>
