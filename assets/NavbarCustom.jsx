@@ -41,6 +41,9 @@ class NavbarCustom extends React.Component {
               <NavItem>
                 <b><NavLink className="text-white" href="/">Agencias</NavLink></b>
               </NavItem>
+              <NavItem>
+                <b><NavLink className="text-white" href="/micuenta">Mi Cuenta</NavLink></b>
+              </NavItem>
             </Nav>
             <Nav className="ml-auto" navbar>
               <Form inline>
