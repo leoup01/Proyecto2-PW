@@ -111,6 +111,25 @@
             }
         }
 
+        function postrole($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                $rol = $_POST['rol'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE usuarios SET rol=:rol WHERE userId = :id");
+                $stmt->bindParam(':id', $id);
+                $stmt->bindParam(':rol', $rol);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
         function post($id=null) {
             $dbh = $this->init();
             try {
@@ -121,6 +140,8 @@
                     return $this->delete($id);
                 else if ($_POST['method']=='posttest')
                     return $this->posttest($id);
+                else if ($_POST['method']=='postrole')
+                    return $this->postrole($id);
                 $password = $_POST['password'];
                 $nombre = $_POST['nombre'];
                 $correo = $_POST['correo'];

@@ -43,6 +43,7 @@ class UsuariosForm extends React.Component {
 
     handleUpdate() {
         console.log("UPDATEUsuario");
+        console.log(this.state);
         fetch("/server/index.php/usuarios/"+this.state.userId,{
             method: "post",
             headers: {'Content-Type': 'application/json'},
@@ -68,7 +69,7 @@ class UsuariosForm extends React.Component {
             //localStorage.removeItem("userIdLS");
            this.props.handleChangeData();
            //window.location.href = "/index";
-           this.forceUpdate();
+           //this.forceUpdate();
          }
     );
     }
@@ -86,7 +87,7 @@ class UsuariosForm extends React.Component {
       if (this.state.userId !== "") {
         return(
           <div>
-            <h2>Gestio de Usuario</h2>
+            <h2>Gestión de Usuario</h2>
               <Form>
                 <Row>
                   <Col sm="12" md="12" lg="12" xl="12">
@@ -104,14 +105,15 @@ class UsuariosForm extends React.Component {
                   
                   <Col sm="12" md="12" lg="12" xl="12">
                     <div className="form-group">
-                      <Label for="rolInput" className="form-label">Rol</Label>  
+                      <Label for="rolInput" className="form-label">Genero</Label>  
                           <Input
-                            type="text"
+                            type="select"
                             name="rol"
                             className="form-control"
                             value={this.state.rol}
-                            onChange={this.handleFields}
-                            readOnly>
+                            onChange={this.handleFields}>
+                            <option>Normal</option>
+                            <option>Administrador</option>
                           </Input> 
                     </div>
                   </Col>
