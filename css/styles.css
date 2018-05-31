@@ -5,6 +5,10 @@ body{
     background: #E8F0ED;
 }
 
+.tableSelectedItem{
+    background-color: #B1B8B5; 
+}
+
 .jumbotron {
   background-color: #D7443F;
   color: #F1ECE9;

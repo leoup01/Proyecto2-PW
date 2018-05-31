@@ -15,8 +15,9 @@ const INITIAL_STATE = {
 class Login extends React.Component {
      constructor(props) {
     super(props);
-
     this.state = { ...INITIAL_STATE };
+
+    this.handleGetUsuario = this.handleGetUsuario.bind(this);
   }
 
   onSubmit = (event) => {
@@ -29,19 +30,40 @@ class Login extends React.Component {
       history,
     } = this.props;
 
-    console.log(this.state);
-    /*
-    auth.doSignInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.DASHBOARD);
-      })
-      .catch(error => {
-        this.setState(byPropKey('error', error));
-      });
-    */
+    this.handleGetUsuario(this.state.email);
+
     event.preventDefault();
   }
+
+  handleGetUsuario(id) {
+          //event.preventDefault();
+          //let receiptId = this.state.receipt['receipt_id'];
+          //console.log(receiptId);
+          fetch('/server/index.php/usuarios/'+id)
+               .then((response) => {
+                   return response.json()
+               })
+               .then((data) => {
+                  console.log("User Found");
+                  console.log(data[0]);
+                   //this.setState({ receipt: data[0] });
+                   if(this.state.password === data[0].password){
+                      localStorage.setItem('userIdLS', data[0].userId);
+                      this.setState(byPropKey('error', ""));
+                      window.location.href = "/index";
+                   }
+                   else{
+                      this.setState(byPropKey('error', "Contraseña incorrecta."));
+                   }
+                   
+                   //this.forceUpdate();
+             }).catch((error)=>{
+                //console.log("ERROR handleGetReceipt");
+                //this.handleGetReceipt(null);
+                console.log("ERROR");
+                this.setState(byPropKey('error', "Usuario no encontrado."));
+             })
+      }
 
   render() {
     const {
@@ -80,7 +102,7 @@ class Login extends React.Component {
                 Ingresar
               </Button>
             </div>
-            { error && <p>{error.message}</p> }
+            { error && <p>{error}</p> }
           </Form>
 
           <hr/>

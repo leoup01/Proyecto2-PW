@@ -79,6 +79,57 @@
                 echo "Failed: " . $e->getMessage();
             }
         }
+
+        function posttest($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                $nombre = $_POST['nombre'];
+                $password = $_POST['password'];
+                $correo = $_POST['correo'];
+                $pais = $_POST['pais'];
+                $edad = $_POST['edad'];
+                $genero = $_POST['genero'];
+                $rol = $_POST['rol'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE usuarios SET nombre=:nombre, password=:password, correo=:correo, pais=:pais, edad=:edad, genero=:genero, rol=:rol WHERE userId = :id");
+                $stmt->bindParam(':id', $id);
+                $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':password', $password);
+                $stmt->bindParam(':correo', $correo);
+                $stmt->bindParam(':pais', $pais);
+                $stmt->bindParam(':edad', $edad);
+                $stmt->bindParam(':genero', $genero);
+                $stmt->bindParam(':rol', $rol);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function postrole($id=null) {
+            $dbh = $this->init();
+            try {
+                $_POST=json_decode(file_get_contents('php://input'), True);
+                $rol = $_POST['rol'];
+                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $stmt = $dbh->prepare("UPDATE usuarios SET rol=:rol WHERE userId = :id");
+                $stmt->bindParam(':id', $id);
+                $stmt->bindParam(':rol', $rol);
+                $dbh->beginTransaction();
+                $stmt->execute();
+                $dbh->commit();
+                echo 'Successfull';
+            } catch (Exception $e) {
+                $dbh->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
         function post($id=null) {
             $dbh = $this->init();
             try {
@@ -87,6 +138,10 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
+                else if ($_POST['method']=='posttest')
+                    return $this->posttest($id);
+                else if ($_POST['method']=='postrole')
+                    return $this->postrole($id);
                 $password = $_POST['password'];
                 $nombre = $_POST['nombre'];
                 $correo = $_POST['correo'];
@@ -323,10 +378,14 @@
             $dbh = $this->init();
             try {
                 if ($id!=null) {
-                    $stmt = $dbh->prepare("SELECT * FROM periodistas WHERE idPeriodista = :id");
+                    //$stmt = $dbh->prepare("SELECT * FROM periodistas WHERE idPeriodista = :id");
+                    $stmt = $dbh->prepare("SELECT idPeriodista, telefono, ciudad, usuario, nombre FROM periodistas, usuarios 
+                                            WHERE periodistas.usuario = usuarios.userId AND idPeriodista = :id");
                     $stmt->bindParam(':id', $id);
                 } else {
-                    $stmt = $dbh->prepare("SELECT * FROM periodistas");
+                    //$stmt = $dbh->prepare("SELECT * FROM periodistas");
+                    $stmt = $dbh->prepare("SELECT idPeriodista, telefono, ciudad, usuario, nombre FROM periodistas, usuarios 
+                                            WHERE periodistas.usuario = usuarios.userId");
                 }
                 $stmt->execute();
                 $data = Array();
@@ -347,7 +406,7 @@
                 $ciudad = $_PUT['ciudad'];
                 $usuario = $_PUT['usuario'];
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("INSERT INTO periodistas (telefono,ciudad,usuario,)
+                $stmt = $dbh->prepare("INSERT INTO periodistas (telefono,ciudad,usuario)
                                                 VALUES (:telefono,:ciudad,:usuario)");
                 $stmt->bindParam(':telefono', $telefono);
                 $stmt->bindParam(':ciudad', $ciudad);
@@ -418,11 +477,19 @@
         function get($id=null) {
             $dbh = $this->init();
             try {
-                if ($id!=null) {
+                /*if ($id!=null) {
                     $stmt = $dbh->prepare("SELECT * FROM categorias WHERE idCategoria = :id");
                     $stmt->bindParam(':id', $id);
                 } else {
                     $stmt = $dbh->prepare("SELECT * FROM categorias");
+                }*/
+                if ($id!=null) {
+                    $stmt = $dbh->prepare("SELECT a.idCategoria, a.nombre, a.zona, a.encargado, b.nombre as encargadoNom FROM categorias a, usuarios b, periodistas 
+                                            WHERE a.encargado = periodistas.idPeriodista AND periodistas.usuario = b.userId AND a.idCategoria = :id");
+                    $stmt->bindParam(':id', $id);
+                } else {
+                    $stmt = $dbh->prepare("SELECT a.idCategoria, a.nombre, a.zona, a.encargado, b.nombre as encargadoNom FROM categorias a, usuarios b, periodistas 
+                    WHERE a.encargado = periodistas.idPeriodista AND periodistas.usuario = b.userId");
                 }
                 $stmt->execute();
                 $data = Array();
@@ -457,6 +524,7 @@
                 echo "Failed: " . $e->getMessage();
             }
         }
+
         function delete($id=null) {
             $dbh = $this->init();
             try {
@@ -472,6 +540,7 @@
                 echo "Failed: " . $e->getMessage();
             }
         }
+
         function post($id=null) {
             $dbh = $this->init();
             try {
@@ -480,20 +549,22 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
-                $nombre = $_POST['nombre'];
-                $zona = $_POST['zona'];
-                $encargado = $_POST['encargado'];
-                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("UPDATE categorias SET nombre=:nombre,
-                                        zona=:zona, encargado=:encargado WHERE idCategoria = :id");
-                $stmt->bindParam(':id', $id);
-                $stmt->bindParam(':nombre', $nombre);
-                $stmt->bindParam(':zona', $zona);
-                $stmt->bindParam(':encargado', $encargado);
-                $dbh->beginTransaction();
-                $stmt->execute();
-                $dbh->commit();
-                echo 'Successfull';
+                else{
+                    $nombre = $_POST['nombre'];
+                    $zona = $_POST['zona'];
+                    $encargado = $_POST['encargado'];
+                    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    $stmt = $dbh->prepare("UPDATE categorias SET nombre=:nombre,
+                                            zona=:zona, encargado=:encargado WHERE idCategoria = :id");
+                    $stmt->bindParam(':id', $id);
+                    $stmt->bindParam(':nombre', $nombre);
+                    $stmt->bindParam(':zona', $zona);
+                    $stmt->bindParam(':encargado', $encargado);
+                    $dbh->beginTransaction();
+                    $stmt->execute();
+                    $dbh->commit();
+                    echo 'Successfull';
+                }
             } catch (Exception $e) {
                 $dbh->rollBack();
                 echo "Failed: " . $e->getMessage();

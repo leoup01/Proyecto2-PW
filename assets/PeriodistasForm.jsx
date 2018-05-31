@@ -4,149 +4,106 @@ var FormGroup = Reactstrap.FormGroup;
 var Label = Reactstrap.Label;
 var Input = Reactstrap.Input;
 var FormText = Reactstrap.FormText;
+var Row = Reactstrap.Row;
+var Col = Reactstrap.Col;
 
 class PeriodistasForm extends React.Component {
     constructor(props) {
        super(props);
     this.state = {
-      userId:"",
-      nombre:"",
-      correo:"",
-      pais:"",
-      edad:0,
-      genero:"",
-      rol:"",
-      telefono:"",
-      ciudad:"",
-      periodistas:[]
-
-      receipt_id:"",
-      receipt_client:"",
-      receipt_taxes:0,
-      receipt_total:0,
-      receipt_date:"",
-      newQty: 0,
-      newDescription: "",
-      newUnitValue: 0,
-      receipt_products: ["products"],
-      productsAux: ["products"]
-    }
-    
-    this.handleInsert = this.handleInsert.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    //this.handleAddProduct = this.handleAddProduct.bind(this);
-    //this.handleGetProducts = this.handleGetProducts.bind(this);
-    //this.handleSubtotal = this.handleSubtotal.bind(this);
-    //this.handleDeleteProduct = this.handleDeleteProduct.bind(this);
-    this.handleFields = this.handleFields.bind(this);
-    //this.test = this.test.bind(this);
-    //this.handleTaxes = this.handleTaxes.bind(this);
-    //this.handleTotal = this.handleTotal.bind(this);
-    this.handleGetLast = this.handleGetLast.bind(this);
+        idPeriodista:"",
+        usuario:"",
+        //nombre:"",
+        //correo:"",
+        //pais:"",
+        //edad:0,
+        //genero:"Femenino",
+        //rol:"Normal",
+        telefono:"",
+        ciudad:"",
+        rol: this.props.rol
+        //periodistas:[]
+      }
+      this.handleInsert = this.handleInsert.bind(this);
+      this.handleUpdate = this.handleUpdate.bind(this);
+      this.handleDelete = this.handleDelete.bind(this);
+      this.handleFields = this.handleFields.bind(this);
     }
     
 
     componentWillReceiveProps(nextProps) {
-       this.setState({receipt_id:nextProps.receipt.receipt_id});
-       this.setState({receipt_client:nextProps.receipt.receipt_client});
-       this.setState({receipt_taxes:nextProps.receipt.receipt_taxes});
-       this.setState({receipt_total:nextProps.receipt.receipt_total});
-       this.setState({receipt_date:nextProps.receipt.receipt_date});
-       this.setState({receipt_products:nextProps.products});
-       //console.log("NEXTPROPS");
-       //console.log(this.state);
-       //console.log(this.nextProps);
+       this.setState({idPeriodista:nextProps.periodista.idPeriodista});
+       this.setState({usuario:nextProps.periodista.usuario});
+       //this.setState({nombre:nextProps.periodista.nombre});
+       //this.setState({correo:nextProps.periodista.correo});
+       //this.setState({pais:nextProps.periodista.pais});
+       //this.setState({genero:nextProps.periodista.edad});
+       this.setState({rol:nextProps.rol});
+       this.setState({telefono:nextProps.periodista.telefono});
+       this.setState({ciudad:nextProps.periodista.ciudad});
+       //this.setState({periodistas:nextProps.periodista.periodistas});
+       console.log("NEXTPROPS");
+       console.log(this.state);
+       console.log(this.nextProps);
     }
 
     handleInsert() {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        if(dd<10) {
-          dd = '0'+dd
-        }
-        if(mm<10) {
-          mm = '0'+mm
-        } 
-        today = dd + '/' + mm + '/' + yyyy;
-          fetch("/server/index.php/receipt/1",{
-        //fetch("/server/index.php/receipt/"+this.state.id,{
-            method: "post",
-            headers: {'Content-Type': 'application/json',
-                               'Content-Length': 20},
-            body: JSON.stringify({
-                method: 'put',
-                receipt_client: "",
-                receipt_taxes: 0,
-                receipt_total: 0,
-                receipt_date: today
-                       })
-    }).then((response) => {
-           this.props.handleChangeData();
-           //this.props.handleChangeReceipt(this.state);
-           console.log("INSERT");
-           console.log(this.props);
-           console.log(this.state);
-           aux = this.handleGetLast();
-           //console.log("AUX");
-           //console.log(aux);
-         }
-    );
-    }
-
-    handleGetLast() {
-
-        fetch("/server/index.php/receipt/",{
-            method: "post",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ method: 'getLast'})
-        })
-        .then((response) => {
-               return response.json()
-           })
-           .then((data) => {
-                console.log("GETLAST");
-                //this.props.handleChangeData();
-                console.log(data[0]);
-                this.props.handleChangeReceipt(data[0]);
-                //return data[0];
-         });
+      console.log("INSERT PERIODISTA");
+      fetch("/server/index.php/periodistas/1",{
+              method: "post",
+              headers: {'Content-Type': 'application/json',
+                                 'Content-Length': 20},
+              body: JSON.stringify({
+                  method: 'put',
+                  telefono: this.state.telefono,
+                  ciudad: this.state.ciudad,
+                  usuario:this.state.usuario
+                         })
+      }).then((response) => {
+              //localStorage.setItem('regres', response.json());
+              //window.location.href = "/login";
+             this.props.handleChangeData();
+             console.log("INSERT END");
+             //console.log(this.props);
+             //console.log(this.state);
+             //aux = this.handleGetLast();
+           }
+      );
     }
 
     handleUpdate() {
-        console.log("UPDATE");
-        fetch("/server/index.php/receipt/"+this.state.receipt_id,{
+        console.log("UPDATEPERIODISTA");
+        console.log(this.state);
+        fetch("/server/index.php/periodistas/"+this.state.idPeriodista,{
             method: "post",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                      receipt_client: this.state.receipt_client,
-                receipt_taxes: 0,
-                receipt_total: 0,
-                receipt_date: this.state.receipt_date
-                       })
+                method: 'post',
+                telefono: this.state.telefono,
+                ciudad: this.state.ciudad,
+                usuario: this.state.usuario
+        })
      }).then((response) => {
            this.props.handleChangeData();
-           //console.log(this.props);
-           //console.log(this.state);
-           this.props.handleChangeReceipt(this.state);
-           console.log("UPDATED");
-           this.forceUpdate();
+           console.log("UPDATED PERIODISTA");
+           //this.forceUpdate();
          }
     );
     }
 
     handleDelete() {
-        fetch("/server/index.php/receipt/"+this.state.receipt_id,{
+      console.log("DELETE");
+        fetch("/server/index.php/periodistas/"+this.state.idPeriodista,{
             method: "post",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ method: 'delete'})
         }).then((response) => {
+            //localStorage.removeItem("userIdLS");
            this.props.handleChangeData();
-           this.handleGetLast();
+           //window.location.href = "/index";
+           //this.forceUpdate();
          }
-    );
+        );
     }
 
     handleFields(event) {
@@ -159,100 +116,57 @@ class PeriodistasForm extends React.Component {
     render() {
       console.log("RENDER PERIODISTASFORM");
       console.log(this.state);
-
-      const thead = <thead className="thead-dark"><tr><th>Nombre</th><th>Usuario</th><th>Correo</th><th>Teléfono</th><th>Ciudad</th></tr></thead>;
-      const rows = this.state.periodistas.map((periodista) => 
-                      <tr key={periodista.userId} data-item={periodista.userId}>
-                        <td>{periodista.nombre}</td>
-                        <td>{periodista.userId}</td>
-                        <td>{periodista..correo}</td>
-                        <td>{periodista.telefono}</td>
-                        <td>{periodista..ciudad}</td>
-                        
-                      </tr>);
-      const tbody = <tbody>{rows}</tbody>;
-
-        return(<Form>
-
-          <div className="form-group">
-            <Label for="userIdInput" className="form-label">Client</Label>  
-                <Input
-                  type="text"
-                  name="userId"
-                  className="form-control"
-                  value={this.state.userId}
-                  onChange={this.handleFields}/> 
+      const buttonsAdmin = (this.state.rol === 'Administrador')?
+                      <div>
+                        <Button onClick={this.handleInsert} className="button button1">Agregar</Button>
+                        <Button onClick={this.handleUpdate} className="button button2">Modificar</Button>
+                        <Button onClick={this.handleDelete} className="button button3">Eliminar</Button>
+                      </div>
+                      :null;
+        return(
+          <div>
+            <h2>Manejo de periodistas</h2>
+              <Form>
+                <Row>
+                  <Col sm="12" md="12" lg="4" xl="4">
+                    <div className="form-group">
+                      <Label for="usuarioInput" className="form-label">Usuario</Label>  
+                          <Input
+                            type="text"
+                            name="usuario"
+                            className="form-control"
+                            value={this.state.usuario}
+                            onChange={this.handleFields}/> 
+                    </div>
+                  </Col>
+                  <Col sm="12" md="12" lg="4" xl="4">
+                    <div className="form-group">
+                      <Label for="ciudadInput" className="form-label">Ciudad</Label>  
+                          <Input
+                            type="text"
+                            name="ciudad"
+                            className="form-control"
+                            value={this.state.ciudad}
+                            onChange={this.handleFields}/> 
+                    </div>
+                  </Col>
+                  <Col sm="12" md="12" lg="4" xl="4">
+                    <div className="form-group">
+                      <Label for="telefonoInput" className="form-label">Teléfono</Label>  
+                          <Input
+                            type="text"
+                            name="telefono"
+                            className="form-control"
+                            value={this.state.telefono}
+                            onChange={this.handleFields}/> 
+                    </div>
+                  </Col>
+                </Row>
+                
+                <Input type="hidden" name="id" value={this.state.idPeriodista}/>
+                {buttonsAdmin}
+              </Form>
           </div>
-          <div className="form-group">
-            <Label for="nombreInput" className="form-label">Client</Label>  
-                <Input
-                  type="text"
-                  name="nombre"
-                  className="form-control"
-                  value={this.state.nombre}
-                  onChange={this.handleFields}/> 
-          </div>
-          <div className="form-group">
-            <Label for="correoInput" className="form-label">Client</Label>  
-                <Input
-                  type="text"
-                  name="correo"
-                  className="form-control"
-                  value={this.state.correo}
-                  onChange={this.handleFields}/> 
-          </div>
-          <div className="form-group">
-            <Label for="paisInput" className="form-label">Client</Label>  
-                <Input
-                  type="text"
-                  name="pais"
-                  className="form-control"
-                  value={this.state.pais}
-                  onChange={this.handleFields}/> 
-          </div>
-          <div className="form-group">
-            <Label for="edadInput" className="form-label">Client</Label>  
-                <Input
-                  type="number"
-                  name="edad"
-                  className="form-control"
-                  value={this.state.edad}
-                  onChange={this.handleFields}/> 
-          </div>
-          <div className="form-group">
-            <Label for="generoInput" className="form-label">Client</Label>  
-                <Input
-                  type="text"
-                  name="genero"
-                  className="form-control"
-                  value={this.state.genero}
-                  onChange={this.handleFields}/> 
-          </div>
-          <div className="form-group">
-            <Label for="InputRol" className="form-label">Client</Label>  
-                <Input
-                  type="select"
-                  name="rol"
-                  className="form-control"
-                  value={this.state.rol}
-                  onChange={this.handleFields}>
-                  <option>Normal</option>
-                  <option>Administrador</option>
-                </Input> 
-          </div>
-
-          <table className="table">{thead}{tbody}</table>
-
-          
-          <Input type="hidden" name="id" value={this.state.userId}/>
-
-           <table><tbody><tr>
-               <td><Button onClick={this.handleInsert} className="button button1">Agregar</Button></td>
-               <td><Button onClick={this.handleUpdate} className="button button2">Modificar</Button></td>
-               <td><Button onClick={this.handleDelete} className="button button3">Eliminar</Button></td>
-           </tr></tbody></table>
-           </Form>
-
-           )
+           );
     }
 }
