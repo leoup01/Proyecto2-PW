@@ -13,11 +13,13 @@ class Periodistas extends React.Component {
     	super(props);
     	this.state = {
     		periodistas:[],
-    		periodista:[]
-	  	}
-
+    		periodista:[],
+	  	  rol: this.handleGetRol()
+      }
+      this.handleGetRol = this.handleGetRol.bind(this);
 	  	this.handleReload = this.handleReload.bind(this);
 	  	this.handleChangeData = this.handleChangeData.bind(this);
+      this.handleChangePeriodista = this.handleChangePeriodista.bind(this);
 	  	/*
 	  	this.handleGetProducts = this.handleGetProducts.bind(this);
         this.handleGetReceipt = this.handleGetReceipt.bind(this);
@@ -27,6 +29,20 @@ class Periodistas extends React.Component {
         this.handleFind = this.handleFind.bind(this);
          */
   	}
+
+    handleGetRol () {
+          const user = localStorage.getItem('userIdLS');
+          console.log("user: "+user);
+          if(user !== null){
+            fetch('/server/index.php/usuarios/'+ user)
+             .then((response) => {
+                return response.json()
+             })
+             .then((data) => {
+                this.setState({ rol: data[0].rol });
+              });
+          }
+    }
 
   	handleReload() {
          fetch('/server/index.php/periodistas')
@@ -42,6 +58,12 @@ class Periodistas extends React.Component {
            })
     }
 
+    handleChangePeriodista(data) {
+            console.log("handleChangePeriodista");
+            console.log(data);
+           this.setState({periodista: data});
+       }
+
     componentWillMount() {
         this.handleReload();
     }
@@ -56,10 +78,12 @@ class Periodistas extends React.Component {
         	<Header/>
         	<Row className="appContainer">
         		<Col sm="12" md="12" lg="8" xl="8">
-        			<PeriodistasForm periodista={this.state.periodista}/>
+        			<PeriodistasForm periodista={this.state.periodista}
+                handleChangeData={this.handleChangeData}
+                rol={this.state.rol}/>
         		</Col>
         		<Col sm="12" md="12" lg="4" xl="4">
-        			<PeriodistasList periodistas={this.state.periodistas}/>
+        			<PeriodistasList periodistas={this.state.periodistas} handleChangePeriodista={this.handleChangePeriodista}/>
         		</Col>
         	</Row>
         </div>

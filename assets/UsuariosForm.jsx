@@ -71,7 +71,7 @@ class UsuariosForm extends React.Component {
            //window.location.href = "/index";
            //this.forceUpdate();
          }
-    );
+        );
     }
 
     handleFields(event) {

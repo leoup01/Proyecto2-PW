@@ -8,8 +8,6 @@ class UsuariosList extends React.Component {
             handleDetails(e) {
               console.log("handleDetails");
                 const index = e.currentTarget.getAttribute('data-item');
-                console.log(index);
-                console.log(this.props.usuarios[index]);
                 this.props.handleChangeUsuario(this.props.usuarios[index]);
             }
             render() {

@@ -11,127 +11,99 @@ class PeriodistasForm extends React.Component {
     constructor(props) {
        super(props);
     this.state = {
-        userId:"",
-        nombre:"",
-        correo:"",
-        pais:"",
-        edad:0,
-        genero:"Femenino",
-        rol:"Normal",
+        idPeriodista:"",
+        usuario:"",
+        //nombre:"",
+        //correo:"",
+        //pais:"",
+        //edad:0,
+        //genero:"Femenino",
+        //rol:"Normal",
         telefono:"",
         ciudad:"",
-        periodistas:[]
+        rol: this.props.rol
+        //periodistas:[]
       }
       this.handleInsert = this.handleInsert.bind(this);
       this.handleUpdate = this.handleUpdate.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
       this.handleFields = this.handleFields.bind(this);
-      this.handleGetLast = this.handleGetLast.bind(this);
     }
     
 
     componentWillReceiveProps(nextProps) {
-       this.setState({userId:nextProps.periodista.userId});
-       this.setState({nombre:nextProps.periodista.nombre});
-       this.setState({correo:nextProps.periodista.correo});
-       this.setState({pais:nextProps.periodista.pais});
-       this.setState({genero:nextProps.periodista.edad});
-       this.setState({rol:nextProps.periodista.rol});
+       this.setState({idPeriodista:nextProps.periodista.idPeriodista});
+       this.setState({usuario:nextProps.periodista.usuario});
+       //this.setState({nombre:nextProps.periodista.nombre});
+       //this.setState({correo:nextProps.periodista.correo});
+       //this.setState({pais:nextProps.periodista.pais});
+       //this.setState({genero:nextProps.periodista.edad});
+       this.setState({rol:nextProps.rol});
        this.setState({telefono:nextProps.periodista.telefono});
        this.setState({ciudad:nextProps.periodista.ciudad});
-       this.setState({periodistas:nextProps.periodista.periodistas});
-       //console.log("NEXTPROPS");
-       //console.log(this.state);
-       //console.log(this.nextProps);
+       //this.setState({periodistas:nextProps.periodista.periodistas});
+       console.log("NEXTPROPS");
+       console.log(this.state);
+       console.log(this.nextProps);
     }
 
     handleInsert() {
-      /*
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        if(dd<10) {
-          dd = '0'+dd
-        }
-        if(mm<10) {
-          mm = '0'+mm
-        } 
-        today = dd + '/' + mm + '/' + yyyy;
-          fetch("/server/index.php/receipt/1",{
-            method: "post",
-            headers: {'Content-Type': 'application/json',
-                               'Content-Length': 20},
-            body: JSON.stringify({
-                method: 'put',
-                receipt_client: "",
-                receipt_taxes: 0,
-                receipt_total: 0,
-                receipt_date: today
-                       })
-    }).then((response) => {
-           this.props.handleChangeData();
-           console.log("INSERT");
-           console.log(this.props);
-           console.log(this.state);
-           aux = this.handleGetLast();
-         }
-    );*/
-    }
-
-    handleGetLast() {
-      /*
-        fetch("/server/index.php/receipt/",{
-            method: "post",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ method: 'getLast'})
-        })
-        .then((response) => {
-               return response.json()
-           })
-           .then((data) => {
-                console.log("GETLAST");
-                //this.props.handleChangeData();
-                console.log(data[0]);
-                this.props.handleChangeReceipt(data[0]);
-                //return data[0];
-         });*/
+      console.log("INSERT PERIODISTA");
+      fetch("/server/index.php/periodistas/1",{
+              method: "post",
+              headers: {'Content-Type': 'application/json',
+                                 'Content-Length': 20},
+              body: JSON.stringify({
+                  method: 'put',
+                  telefono: this.state.telefono,
+                  ciudad: this.state.ciudad,
+                  usuario:this.state.usuario
+                         })
+      }).then((response) => {
+              //localStorage.setItem('regres', response.json());
+              //window.location.href = "/login";
+             this.props.handleChangeData();
+             console.log("INSERT END");
+             //console.log(this.props);
+             //console.log(this.state);
+             //aux = this.handleGetLast();
+           }
+      );
     }
 
     handleUpdate() {
-      /*
-        console.log("UPDATE");
-        fetch("/server/index.php/receipt/"+this.state.receipt_id,{
+        console.log("UPDATEPERIODISTA");
+        console.log(this.state);
+        fetch("/server/index.php/periodistas/"+this.state.idPeriodista,{
             method: "post",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                      receipt_client: this.state.receipt_client,
-                receipt_taxes: 0,
-                receipt_total: 0,
-                receipt_date: this.state.receipt_date
-                       })
+                method: 'post',
+                telefono: this.state.telefono,
+                ciudad: this.state.ciudad,
+                usuario: this.state.usuario
+        })
      }).then((response) => {
            this.props.handleChangeData();
-           //console.log(this.props);
-           //console.log(this.state);
-           this.props.handleChangeReceipt(this.state);
-           console.log("UPDATED");
-           this.forceUpdate();
+           console.log("UPDATED PERIODISTA");
+           //this.forceUpdate();
          }
-    );*/
+    );
     }
 
     handleDelete() {
-      /*
-        fetch("/server/index.php/receipt/"+this.state.receipt_id,{
+      console.log("DELETE");
+        fetch("/server/index.php/periodistas/"+this.state.idPeriodista,{
             method: "post",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ method: 'delete'})
         }).then((response) => {
+            //localStorage.removeItem("userIdLS");
            this.props.handleChangeData();
-           this.handleGetLast();
+           //window.location.href = "/index";
+           //this.forceUpdate();
          }
-    );*/
+        );
     }
 
     handleFields(event) {
@@ -144,6 +116,13 @@ class PeriodistasForm extends React.Component {
     render() {
       console.log("RENDER PERIODISTASFORM");
       console.log(this.state);
+      const buttonsAdmin = (this.state.rol === 'Administrador')?
+                      <div>
+                        <Button onClick={this.handleInsert} className="button button1">Agregar</Button>
+                        <Button onClick={this.handleUpdate} className="button button2">Modificar</Button>
+                        <Button onClick={this.handleDelete} className="button button3">Eliminar</Button>
+                      </div>
+                      :null;
         return(
           <div>
             <h2>Manejo de periodistas</h2>
@@ -151,47 +130,12 @@ class PeriodistasForm extends React.Component {
                 <Row>
                   <Col sm="12" md="12" lg="4" xl="4">
                     <div className="form-group">
-                      <Label for="userIdInput" className="form-label">Usuario</Label>  
+                      <Label for="usuarioInput" className="form-label">Usuario</Label>  
                           <Input
                             type="text"
-                            name="userId"
+                            name="usuario"
                             className="form-control"
-                            value={this.state.userId}
-                            onChange={this.handleFields}/> 
-                    </div>
-                  </Col>
-                  <Col sm="12" md="12" lg="4" xl="4">
-                    <div className="form-group">
-                      <Label for="nombreInput" className="form-label">Nombre</Label>  
-                          <Input
-                            type="text"
-                            name="nombre"
-                            className="form-control"
-                            value={this.state.nombre}
-                            onChange={this.handleFields}/> 
-                    </div>
-                  </Col>
-                  <Col sm="12" md="12" lg="4" xl="4">
-                    <div className="form-group">
-                      <Label for="correoInput" className="form-label">Correo</Label>  
-                          <Input
-                            type="text"
-                            name="correo"
-                            className="form-control"
-                            value={this.state.correo}
-                            onChange={this.handleFields}/> 
-                    </div>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm="12" md="12" lg="4" xl="4">
-                    <div className="form-group">
-                      <Label for="paisInput" className="form-label">País</Label>  
-                          <Input
-                            type="text"
-                            name="pais"
-                            className="form-control"
-                            value={this.state.pais}
+                            value={this.state.usuario}
                             onChange={this.handleFields}/> 
                     </div>
                   </Col>
@@ -218,53 +162,9 @@ class PeriodistasForm extends React.Component {
                     </div>
                   </Col>
                 </Row>
-                <Row>
-                  <Col sm="12" md="12" lg="4" xl="4">
-                    <div className="form-group">
-                      <Label for="edadInput" className="form-label">Edad</Label>  
-                          <Input
-                            type="number"
-                            name="edad"
-                            className="form-control"
-                            value={this.state.edad}
-                            onChange={this.handleFields}/> 
-                    </div>
-                  </Col>
-                  <Col sm="12" md="12" lg="4" xl="4">
-                    <div className="form-group">
-                      <Label for="generoInput" className="form-label">Rol</Label>  
-                          <Input
-                            type="select"
-                            name="genero"
-                            className="form-control"
-                            value={this.state.genero}
-                            onChange={this.handleFields}>
-                            <option>Femenino</option>
-                            <option>Masculino</option>
-                          </Input> 
-                    </div>
-                  </Col>
-                  <Col sm="12" md="12" lg="4" xl="4">
-                    <div className="form-group">
-                      <Label for="rolInput" className="form-label">Rol</Label>  
-                          <Input
-                            type="select"
-                            name="rol"
-                            className="form-control"
-                            value={this.state.rol}
-                            onChange={this.handleFields}>
-                            <option>Normal</option>
-                            <option>Administrador</option>
-                          </Input> 
-                    </div>
-                  </Col>
-                </Row>
                 
-                <Input type="hidden" name="id" value={this.state.userId}/>
-
-                     <Button onClick={this.handleInsert} className="button button1">Agregar</Button>
-                     <Button onClick={this.handleUpdate} className="button button2">Modificar</Button>
-                     <Button onClick={this.handleDelete} className="button button3">Eliminar</Button>
+                <Input type="hidden" name="id" value={this.state.idPeriodista}/>
+                {buttonsAdmin}
               </Form>
           </div>
            );

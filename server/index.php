@@ -402,7 +402,7 @@
                 $ciudad = $_PUT['ciudad'];
                 $usuario = $_PUT['usuario'];
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("INSERT INTO periodistas (telefono,ciudad,usuario,)
+                $stmt = $dbh->prepare("INSERT INTO periodistas (telefono,ciudad,usuario)
                                                 VALUES (:telefono,:ciudad,:usuario)");
                 $stmt->bindParam(':telefono', $telefono);
                 $stmt->bindParam(':ciudad', $ciudad);
