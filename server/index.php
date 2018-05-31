@@ -312,10 +312,12 @@
             try {
                 $_PUT=json_decode(file_get_contents('php://input'), True);
                 $fecha = $_PUT['fecha'];
+                $numero = $_PUT['numero'];
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("INSERT INTO boletines (fecha)
-                                                VALUES (:fecha)");
+                $stmt = $dbh->prepare("INSERT INTO boletines (fecha, numero)
+                                                VALUES (:fecha, :numero)");
                 $stmt->bindParam(':fecha', $fecha);
+                $stmt->bindParam(':numero', $numero);
                 $dbh->beginTransaction();
                 $stmt->execute();
                 $dbh->commit();
@@ -348,15 +350,19 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
-                $fecha = $_POST['fecha'];
-                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("UPDATE boletines SET fecha=:fecha WHERE idBoletin = :id");
-                $stmt->bindParam(':id', $id);
-                $stmt->bindParam(':fecha', $fecha);
-                $dbh->beginTransaction();
-                $stmt->execute();
-                $dbh->commit();
-                echo 'Successfull';
+                else{
+                    $fecha = $_POST['fecha'];
+                    $numero = $_POST['numero'];
+                    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    $stmt = $dbh->prepare("UPDATE boletines SET fecha=:fecha, numero=:numero WHERE idBoletin = :id");
+                    $stmt->bindParam(':id', $id);
+                    $stmt->bindParam(':fecha', $fecha);
+                    $stmt->bindParam(':numero', $numero);
+                    $dbh->beginTransaction();
+                    $stmt->execute();
+                    $dbh->commit();
+                    echo 'Successfull';
+                }
             } catch (Exception $e) {
                 $dbh->rollBack();
                 echo "Failed: " . $e->getMessage();

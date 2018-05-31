@@ -8,21 +8,21 @@ var Label = Reactstrap.Label;
 var Input = Reactstrap.Input;
 var FormText = Reactstrap.FormText;
 
-class Categorias extends React.Component {
+class Boletines extends React.Component {
     constructor(props) {
     	super(props);
     	this.state = {
-    		categorias:[],
-            categoria:[]
+    		boletines:[],
+            boletin:[]
 	  	}
 
 	  	this.handleReload = this.handleReload.bind(this);
-        this.handleChangeCategoria = this.handleChangeCategoria.bind(this);
+        this.handleChangeBoletin = this.handleChangeBoletin.bind(this);
         this.handleChangeData = this.handleChangeData.bind(this);
   	}
 
   	handleReload() {
-        fetch('/server/index.php/categorias')
+        fetch('/server/index.php/boletines')
         .then((response) => {
         console.log(response);
             return response.json()
@@ -30,7 +30,7 @@ class Categorias extends React.Component {
         .then((data) => {
             console.log("handleReload");
             console.log(data);
-            this.setState({ categorias: data });
+            this.setState({ boletines: data });
         });
     }
 
@@ -42,8 +42,8 @@ class Categorias extends React.Component {
         this.handleReload();
     }
 
-    handleChangeCategoria(data) {
-        this.setState({categoria: data})
+    handleChangeBoletin(data) {
+        this.setState({boletin: data})
     }
 
   render() {
@@ -52,10 +52,10 @@ class Categorias extends React.Component {
         	<Header/>
         	<Row className="appContainer">
         		<Col sm="12" md="12" lg="8" xl="8">
-        			<CategoriasForm categoria={this.state.categoria} handleChangeData={this.handleChangeData}/>
+        			<BoletinesForm boletin={this.state.boletin} handleChangeData={this.handleChangeData}/>
         		</Col>
         		<Col sm="12" md="12" lg="4" xl="4">
-        			<CategoriasList categorias={this.state.categorias} handleChangeCategoria={this.handleChangeCategoria}/>
+        			<BoletinesList boletines={this.state.boletines} handleChangeBoletin={this.handleChangeBoletin}/>
         		</Col>
         	</Row>
         </div>
@@ -64,4 +64,4 @@ class Categorias extends React.Component {
   }
  }
 
-ReactDOM.render(<Categorias/>, document.getElementById('root'));
+ReactDOM.render(<Boletines/>, document.getElementById('root'));

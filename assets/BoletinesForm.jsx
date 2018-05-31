@@ -7,16 +7,14 @@ var FormText = Reactstrap.FormText;
 var Row = Reactstrap.Row;
 var Col = Reactstrap.Col;
 
-class CategoriasForm extends React.Component {
+class BoletinesForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            idCategoria:"",
-            nombre:"",
-            zona:"",
-            encargado:"",
-            categorias:[],
-            periodistas: []
+            idBoletin:0,
+            numero:"",
+            fecha:"",
+            boletines:[]
         }
         this.handleInsert = this.handleInsert.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
@@ -24,39 +22,24 @@ class CategoriasForm extends React.Component {
         this.handleFields = this.handleFields.bind(this);
     }
     
-    componentDidMount(){
-      fetch('/server/index.php/periodistas')
-        .then((response) => {
-        console.log(response);
-            return response.json()
-        })
-        .then((data) => {
-            console.log("PERIDISTAS SON:");
-            console.log(data);
-            this.setState({ periodistas: data });
-        });
-    }
-
     componentWillReceiveProps(nextProps) {
-       this.setState({idCategoria:nextProps.categoria.idCategoria});
-       this.setState({nombre:nextProps.categoria.nombre});
-       this.setState({zona:nextProps.categoria.zona});
-       this.setState({encargado:nextProps.categoria.encargado});
-       this.setState({categorias:nextProps.categoria.categorias});
+       this.setState({idBoletin:nextProps.boletin.idBoletin});
+       this.setState({numero:nextProps.boletin.numero});
+       this.setState({fecha:nextProps.boletin.fecha});
+       this.setState({boletines:nextProps.boletin.boletines});
     }
 
     handleInsert() {
       console.log("INSERT");
       console.log(this.state);
-      fetch("/server/index.php/categorias/"+this.state.idCategoria,{
+      fetch("/server/index.php/boletines/"+this.state.idBoletin,{
         method: "post",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
             method: 'put',
-            idCategoria: this.state.idCategoria,
-            nombre: this.state.nombre,
-            zona: this.state.zona,
-            encargado: this.state.encargado
+            idBoletin: this.state.idBoletin,
+            numero: this.state.numero,
+            fecha: this.state.fecha
                    })
       }).then((response) => {
             console.log("THE FUCKING RESPONSE IS:");
@@ -69,15 +52,14 @@ class CategoriasForm extends React.Component {
     handleUpdate() {
       console.log("UPDATE");
       console.log(this.state);
-      console.log(this.state.idCategoria);
-      fetch("/server/index.php/categorias/"+this.state.idCategoria,{
+      console.log(this.state.idBoletin);
+      fetch("/server/index.php/boletines/"+this.state.idBoletin,{
           method: "post",
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
-              idCategoria: this.state.idCategoria,
-              nombre: this.state.nombre,
-              zona: this.state.zona,
-              encargado: this.state.encargado
+              idBoletin: this.state.idBoletin,
+              numero: this.state.numero,
+              fecha: this.state.fecha
           })
       }).then((response) => {
             console.log(response);
@@ -88,7 +70,7 @@ class CategoriasForm extends React.Component {
     }
 
     handleDelete() {
-      fetch("/server/index.php/categorias/"+this.state.idCategoria,{
+      fetch("/server/index.php/boletines/"+this.state.idBoletin,{
         method: "post",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ method: 'delete'})
@@ -107,57 +89,39 @@ class CategoriasForm extends React.Component {
 
     render() {
 
-      const opts = this.state.periodistas.map((periodista) => 
-        <option value={periodista.idPeriodista}>{periodista.nombre}</option>
-      );
-      console.log("RENDER CATEGORIASFORM");
+      console.log("RENDER BOLETINESFORM");
       console.log(this.state);
         return(
           <div>
-            <h2>Manejo de categorias</h2>
+            <h2>Manejo de boletines</h2>
               <Form>
                 <Row>                  
                   <Col sm="12" md="12" lg="4" xl="4">
                     <div className="form-group">
-                      <Label for="nombreInput" className="form-label">Nombre</Label>  
+                      <Label for="numeroInput" className="form-label">Numero</Label>  
                           <Input
-                            type="text"
-                            name="nombre"
+                            type="number"
+                            name="numero"
+                            min="1"
                             className="form-control"
-                            value={this.state.nombre}
+                            value={this.state.numero}
                             onChange={this.handleFields}/> 
                     </div>
                   </Col>
                   <Col sm="12" md="12" lg="4" xl="4">
                     <div className="form-group">
-                      <Label for="zonaInput" className="form-label">Zona</Label>  
+                      <Label for="fechaInput" className="form-label">Fecha</Label>  
                           <Input
-                            type="text"
-                            name="zona"
+                            type="date"
+                            name="fecha"
                             className="form-control"
-                            value={this.state.zona}
+                            value={this.state.fecha}
                             onChange={this.handleFields}/> 
-                    </div>
-                  </Col>
-                </Row>
-                <Row>                 
-                  <Col sm="12" md="12" lg="4" xl="4">
-                    <div className="form-group">
-                      <Label for="encargadoNomInput" className="form-label">Encargado</Label>  
-                          <Input
-                            type="select"
-                            name="encargado"
-                            className="form-control"
-                            value={this.state.encargado}
-                            onChange={this.handleFields}
-                            > 
-                             {opts}
-                            </Input>
                     </div>
                   </Col>
                 </Row>
                 
-                <Input type="hidden" name="id" value={this.state.idCategoria}/>
+                <Input type="hidden" name="id" value={this.state.idBoletin}/>
 
                      <Button onClick={this.handleInsert} className="button button1">Agregar</Button>
                      <Button onClick={this.handleUpdate} className="button button2">Modificar</Button>
