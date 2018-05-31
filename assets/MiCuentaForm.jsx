@@ -100,7 +100,7 @@ class MiCuentaForm extends React.Component {
 
     handleDelete() {
         console.log("DELETE");
-        /*fetch("/server/index.php/categorias/"+this.state.idCategoria,{
+        fetch("/server/index.php/usuarios/"+this.state.userId,{
             method: "post",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ method: 'delete'})
@@ -110,15 +110,7 @@ class MiCuentaForm extends React.Component {
            //this.handleGetLast();
            window.location.href = "/index";
          }
-        );*/
-        fetch("server/index.php/categorias/"+this.state.idCategoria,{
-          method: "post",
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ method: 'delete'})
-        }).then((response) => {
-          this.props.handleChangeData();
-        }
-      );
+    );
     }
 
     handleFields(event) {
