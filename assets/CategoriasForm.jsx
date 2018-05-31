@@ -25,7 +25,7 @@ class CategoriasForm extends React.Component {
     }
     
     componentDidMount(){
-      fetch('server/index.php/periodistas')
+      fetch('/server/index.php/periodistas')
         .then((response) => {
         console.log(response);
             return response.json()
@@ -48,7 +48,7 @@ class CategoriasForm extends React.Component {
     handleInsert() {
       console.log("INSERT");
       console.log(this.state);
-      fetch("server/index.php/categorias/"+this.state.idCategoria,{
+      fetch("/server/index.php/categorias/"+this.state.idCategoria,{
         method: "post",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -70,7 +70,7 @@ class CategoriasForm extends React.Component {
       console.log("UPDATE");
       console.log(this.state);
       console.log(this.state.idCategoria);
-      fetch("server/index.php/categorias/"+this.state.idCategoria,{
+      fetch("/server/index.php/categorias/"+this.state.idCategoria,{
           method: "post",
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
@@ -88,7 +88,7 @@ class CategoriasForm extends React.Component {
     }
 
     handleDelete() {
-      fetch("server/index.php/categorias/"+this.state.idCategoria,{
+      fetch("/server/index.php/categorias/"+this.state.idCategoria,{
         method: "post",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ method: 'delete'})

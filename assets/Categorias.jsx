@@ -23,7 +23,7 @@ class Categorias extends React.Component {
   	}
 
   	handleReload() {
-        fetch('server/index.php/categorias')
+        fetch('/server/index.php/categorias')
         .then((response) => {
         console.log(response);
             return response.json()
