@@ -51,7 +51,7 @@ class NavbarCustom extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
               <NavItem>
-                <b><NavLink className="text-white" href="/">Noticias</NavLink></b>
+                <b><NavLink className="text-white" href="/noticias">Noticias</NavLink></b>
               </NavItem>
               <NavItem>
                 <b><NavLink className="text-white" href="/boletines">Boletines</NavLink></b>
