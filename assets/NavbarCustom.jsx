@@ -68,6 +68,9 @@ class NavbarCustom extends React.Component {
                 <b><NavLink className="text-white" href="/periodistas">Periodistas</NavLink></b>
               </NavItem>
               <NavItem>
+                <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
+              </NavItem>
+              <NavItem>
                 <b><NavLink className="text-white" href="/micuenta">Mi Cuenta</NavLink></b>
               </NavItem>
               {navbarItemAdmin}
