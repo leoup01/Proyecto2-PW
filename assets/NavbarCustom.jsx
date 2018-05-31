@@ -40,9 +40,14 @@ class NavbarCustom extends React.Component {
   }
   render() {
     const navbarItemAdmin = (this.state.rol === 'Administrador')?
-                    <NavItem>
-                      <b><NavLink className="text-white" href="/usuarios">Usuarios</NavLink></b>
-                    </NavItem>
+                    <Nav navbar>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
+                      </NavItem>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/usuarios">Usuarios</NavLink></b>
+                      </NavItem>
+                      </Nav>
                     :null;
     return (
         <Navbar dark expand="md">
@@ -61,9 +66,6 @@ class NavbarCustom extends React.Component {
               </NavItem>
               <NavItem>
                 <b><NavLink className="text-white" href="/periodistas">Periodistas</NavLink></b>
-              </NavItem>
-              <NavItem>
-                <b><NavLink className="text-white" href="/">Agencias</NavLink></b>
               </NavItem>
               <NavItem>
                 <b><NavLink className="text-white" href="/micuenta">Mi Cuenta</NavLink></b>

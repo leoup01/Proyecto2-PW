@@ -102,6 +102,8 @@ class AgenciasForm extends React.Component {
         })
      }).then((response) => {
            this.props.handleChangeData();
+           this.props.handleChangeAgencia([]);
+              this.handleResetForm();
            console.log("UPDATED PERIODISTA");
            //this.forceUpdate();
          }
