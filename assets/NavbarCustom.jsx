@@ -60,13 +60,19 @@ class NavbarCustom extends React.Component {
               </NavItem>
                 
               {
-                ((this.state.rol === 'Periodista') || (this.state.rol === 'Jefe') || (this.state.rol === 'Administrador'))?
+                ((this.state.rol === 'Periodista') || (this.state.rol === 'Jefe de redacción') || (this.state.rol === 'Administrador'))?
                     <Nav navbar>
                       <NavItem>
                         <b><NavLink className="text-white" href="/noticias">Noticias</NavLink></b>
                       </NavItem>
                       <NavItem>
                         <b><NavLink className="text-white" href="/boletines">Boletines</NavLink></b>
+                      </NavItem>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/periodistas">Periodistas</NavLink></b>
+                      </NavItem>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
                       </NavItem>
                     </Nav>
                     :null
@@ -77,18 +83,12 @@ class NavbarCustom extends React.Component {
                       <NavItem>
                         <b><NavLink className="text-white" href="/categorias">Categorías</NavLink></b>
                       </NavItem>
-                      <NavItem>
-                        <b><NavLink className="text-white" href="/periodistas">Periodistas</NavLink></b>
-                      </NavItem>
                     </Nav>
                     :null
               }
               {
                 (this.state.rol === 'Administrador')?
                     <Nav navbar>
-                      <NavItem>
-                        <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
-                      </NavItem>
                       <NavItem>
                         <b><NavLink className="text-white" href="/usuarios">Usuarios</NavLink></b>
                       </NavItem>

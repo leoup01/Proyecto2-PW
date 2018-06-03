@@ -16,7 +16,8 @@ class CategoriasForm extends React.Component {
             zona:"",
             encargado:"",
             categorias:[],
-            periodistas: []
+            periodistas: [],
+            rol: this.props.rol
         }
         this.handleInsert = this.handleInsert.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
@@ -43,6 +44,7 @@ class CategoriasForm extends React.Component {
        this.setState({zona:nextProps.categoria.zona});
        this.setState({encargado:nextProps.categoria.encargado});
        this.setState({categorias:nextProps.categoria.categorias});
+       this.setState({rol:nextProps.rol});
     }
 
     handleInsert() {
@@ -106,7 +108,13 @@ class CategoriasForm extends React.Component {
     }
 
     render() {
-
+      const buttonsJefe = ((this.state.rol === 'Jefe de redacción') || (this.state.rol === 'Administrador'))?
+                      <div>
+                        <Button onClick={this.handleInsert} className="button button1">Agregar</Button>
+                         <Button onClick={this.handleUpdate} className="button button2">Modificar</Button>
+                         <Button onClick={this.handleDelete} className="button button3">Eliminar</Button>
+                      </div>
+                      :null;
       const opts = this.state.periodistas.map((periodista) => 
         <option value={periodista.idPeriodista}>{periodista.nombre}</option>
       );
@@ -159,10 +167,9 @@ class CategoriasForm extends React.Component {
                 
                 <Input type="hidden" name="id" value={this.state.idCategoria}/>
 
-                     <Button onClick={this.handleInsert} className="button button1">Agregar</Button>
-                     <Button onClick={this.handleUpdate} className="button button2">Modificar</Button>
-                     <Button onClick={this.handleDelete} className="button button3">Eliminar</Button>
-              </Form>
+                {buttonsJefe}
+
+            </Form>
           </div>
            );
     }

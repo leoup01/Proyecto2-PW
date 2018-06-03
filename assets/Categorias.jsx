@@ -13,13 +13,28 @@ class Categorias extends React.Component {
     	super(props);
     	this.state = {
     		categorias:[],
-            categoria:[]
+            categoria:[],
+            rol: this.handleGetRol()
 	  	}
-
+        this.handleGetRol = this.handleGetRol.bind(this);
 	  	this.handleReload = this.handleReload.bind(this);
         this.handleChangeCategoria = this.handleChangeCategoria.bind(this);
         this.handleChangeData = this.handleChangeData.bind(this);
   	}
+
+    handleGetRol () {
+          const user = localStorage.getItem('userIdLS');
+          console.log("user: "+user);
+          if(user !== null){
+            fetch('/server/index.php/usuarios/'+ user)
+             .then((response) => {
+                return response.json()
+             })
+             .then((data) => {
+                this.setState({ rol: data[0].rol });
+              });
+          }
+    }
 
   	handleReload() {
         fetch('/server/index.php/categorias')
@@ -52,7 +67,10 @@ class Categorias extends React.Component {
         	<Header/>
         	<Row className="appContainer">
         		<Col sm="12" md="12" lg="8" xl="8">
-        			<CategoriasForm categoria={this.state.categoria} handleChangeData={this.handleChangeData}/>
+        			<CategoriasForm
+                        categoria={this.state.categoria}
+                        handleChangeData={this.handleChangeData}
+                        rol={this.state.rol}/>
         		</Col>
         		<Col sm="12" md="12" lg="4" xl="4">
         			<CategoriasList categorias={this.state.categorias} handleChangeCategoria={this.handleChangeCategoria}/>
