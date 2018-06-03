@@ -86,7 +86,7 @@ class Login extends React.Component {
               value={email}
               onChange={event => this.setState(byPropKey('email', event.target.value))}
               type="text"
-              placeholder="Correo electrónico"
+              placeholder="Usuario"
             />
             </FormGroup> 
             <FormGroup> 
