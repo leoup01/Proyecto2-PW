@@ -74,12 +74,6 @@ class NavbarCustom extends React.Component {
                       <NavItem>
                         <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
                       </NavItem>
-                    </Nav>
-                    :null
-              }
-              {
-                ((this.state.rol === 'Jefe de redacción') || (this.state.rol === 'Administrador'))?
-                    <Nav navbar>
                       <NavItem>
                         <b><NavLink className="text-white" href="/categorias">Categorías</NavLink></b>
                       </NavItem>
