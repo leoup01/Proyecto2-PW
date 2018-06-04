@@ -886,11 +886,8 @@
             try {
                 $_DELETE=json_decode(file_get_contents('php://input'), True);
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $usuario = $_DELETE['usuario'];
-                $categoria = $_DELETE['categoria'];
-                $stmt = $dbh->prepare("DELETE FROM preferidas WHERE usuario = :usuario AND categoria = :categoria");
-                $stmt->bindParam(':usuario', $usuario);
-                $stmt->bindParam(':categoria', $categoria);
+                $stmt = $dbh->prepare("DELETE FROM preferidas WHERE usuario = :id");
+                $stmt->bindParam(':id', $id);
                 $dbh->beginTransaction();
                 $stmt->execute();
                 $dbh->commit();
@@ -909,17 +906,19 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
-                $usuario = $_POST['usuario'];
-                $categoria = $_POST['categoria'];
-                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("UPDATE preferidas SET usuario=:usuario, categoria =:categoria
-                                        WHERE usuario = :usuario AND categoria = :categoria");
-                $stmt->bindParam(':usuario', $usuario);
-                $stmt->bindParam(':categoria', $categoria);
-                $dbh->beginTransaction();
-                $stmt->execute();
-                $dbh->commit();
-                echo 'Successfull';
+                else{
+                    $usuario = $_POST['usuario'];
+                    $categoria = $_POST['categoria'];
+                    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    $stmt = $dbh->prepare("UPDATE preferidas SET usuario=:usuario, categoria =:categoria
+                                            WHERE usuario = :usuario AND categoria = :categoria");
+                    $stmt->bindParam(':usuario', $usuario);
+                    $stmt->bindParam(':categoria', $categoria);
+                    $dbh->beginTransaction();
+                    $stmt->execute();
+                    $dbh->commit();
+                    echo 'Successfull';
+                }
             } catch (Exception $e) {
                 $dbh->rollBack();
                 echo "Failed: " . $e->getMessage();

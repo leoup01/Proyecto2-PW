@@ -18,7 +18,9 @@ class MiCuentaForm extends React.Component {
         pais:"",
         edad:0,
         genero:"Femenino",
-        rol:"Normal"
+        rol:"Normal",
+        categorias: [],
+        checkedCats: []
       }
       //this.handleInsert = this.handleInsert.bind(this);
       this.handleUpdate = this.handleUpdate.bind(this);
@@ -37,10 +39,22 @@ class MiCuentaForm extends React.Component {
        this.setState({pais:nextProps.usuario.pais});
        this.setState({genero:nextProps.usuario.genero});
        this.setState({rol:nextProps.usuario.rol});
+       this.setState({checkedCats:nextProps.checkedCats});
        //console.log("NEXTPROPS");
        //console.log(this.state);
        //console.log(this.nextProps);
     }
+
+    componentDidMount(){
+      fetch('/server/index.php/categorias')
+        .then((response) => {
+            return response.json();
+        }).then((data) => {
+          this.setState({ 
+              categorias: data
+          });
+        }); 
+  }
 
     handleUpdate() {
       
@@ -73,29 +87,45 @@ class MiCuentaForm extends React.Component {
     }
 
     handleUpdateTest() {
-        console.log("UPDATETEST");
-        fetch("/server/index.php/usuarios/"+this.state.userId,{
+      console.log("UPDATETEST");
+      fetch("/server/index.php/usuarios/"+this.state.userId,{
+          method: "post",
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+              method: 'posttest',
+              password: this.state.password,
+              nombre: this.state.nombre,
+              correo: this.state.correo,
+              pais: this.state.pais,
+              edad: this.state.edad,
+              genero: this.state.genero,
+              rol: this.state.rol
+          })
+      }).then((response) => {
+        fetch("/server/index.php/preferidas/"+this.state.userId,{
             method: "post",
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                method: 'posttest',
-                password: this.state.password,
-                nombre: this.state.nombre,
-                correo: this.state.correo,
-                pais: this.state.pais,
-                edad: this.state.edad,
-                genero: this.state.genero,
-                rol: this.state.rol
-        })
-     }).then((response) => {
-           this.props.handleChangeData();
-           //console.log(this.props);
-           //console.log(this.state);
-           //this.props.handleChangeReceipt(this.state);
-           console.log("UPDATED TEST");
-           //this.forceUpdate();
-         }
-    );
+            body: JSON.stringify({ method: 'delete'})
+        }).then((response) =>{
+            this.state.checkedCats.forEach((item,index) =>{
+                if(item === true){
+                    fetch("/server/index.php/preferidas",{
+                        method: "post",
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            method: 'put',
+                            usuario: this.state.userId,
+                            categoria: index
+                        })
+                    });
+                }
+            });            
+            this.setState({
+              checkedCats: [-1]
+            });
+            this.props.handleChangeData();
+          })
+        });
     }
 
     handleDelete() {
@@ -114,15 +144,37 @@ class MiCuentaForm extends React.Component {
     }
 
     handleFields(event) {
-     const target = event.target;
-     const value = target.value;
-     const name = target.name;
-     this.setState({[name]: value});
+      const target = event.target;
+      console.log("OPT IS:");
+      console.log(target);
+      const checkid = target.getAttribute('checkid');
+      console.log("CHECKID IS:");
+      console.log(checkid);
+         if(target.type === 'checkbox'){
+             const checkid = target.getAttribute('checkid');
+             const value = target.checked;
+             let copy = this.state.checkedCats;
+             copy[checkid] = value;
+             this.setState({
+                 checkedCats: copy
+             });          
+         }else{
+             const value = target.value;
+             const name = target.name;
+             this.setState({[name]: value});
+         }   
     }
 
     render() {
       console.log("RENDER MICUENTAFORM");
-      console.log(this.state);
+      console.log(this.state.checkedCats);
+      const catOpts = this.state.categorias.map((categoria,index) => 
+        <FormGroup check inline>
+          <Label check>
+             <Input type="checkbox" checkid={categoria.idCategoria} checked={this.state.checkedCats[categoria.idCategoria] === true} value={categoria.idCategoria} onChange={this.handleFields}/> {categoria.nombre}
+          </Label>
+        </FormGroup>
+      );
       if (this.state.userId !== "") {
         return(
           <div>
@@ -229,6 +281,14 @@ class MiCuentaForm extends React.Component {
                           </Input> 
                     </div>
                   </Col>
+                </Row>
+                <Row>
+                    <Col sm="12" md="12" lg="12" xl="12">  
+                    <Label for="categoriasInput" className="form-label">Categorías Preferidas</Label>                      
+                        <div className="form-group">
+                            {catOpts}
+                        </div>
+                    </Col>
                 </Row>
                 
                 <Input type="hidden" name="id" value={this.state.userId}/>

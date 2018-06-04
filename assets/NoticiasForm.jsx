@@ -31,8 +31,6 @@ class NoticiasForm extends React.Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.handleFields = this.handleFields.bind(this);
     }
-
-    
     
     componentDidMount(){
         let pers;
@@ -98,7 +96,6 @@ class NoticiasForm extends React.Component {
        this.setState({agencia:nextProps.noticia.agencia});
        this.setState({boletin:nextProps.noticia.boletin});
        this.setState({noticias:nextProps.noticia.noticias});
-       this.setState({checkedRaw:nextProps.checkedRaw});
        this.setState({checkedCats:nextProps.checkedCats});
     }
 
@@ -197,10 +194,6 @@ class NoticiasForm extends React.Component {
     }
 
     handleFields(event) {
-     /*const target = event.target;
-     const value = target.value;
-     const name = target.name;
-     this.setState({[name]: value});*/
      const target = event.target;
      console.log("OPT IS:");
      console.log(target);
