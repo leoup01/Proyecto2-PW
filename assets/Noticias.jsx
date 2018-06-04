@@ -13,7 +13,8 @@ class Noticias extends React.Component {
     	super(props);
     	this.state = {
     		noticias:[],
-            noticia:[]
+            noticia:[],
+            checkedCats: [-1]
 	  	}
 
 	  	this.handleReload = this.handleReload.bind(this);
@@ -30,10 +31,20 @@ class Noticias extends React.Component {
         .then((data) => {
             console.log("handleReload");
             console.log(data);
-            this.setState({ noticias: data });
+            this.setState({ noticias: data,
+                            noticia: {
+                                idNoticia:"",
+                                fecha:"",
+                                lugar:"",
+                                titulo:"",
+                                cuerpo:"",
+                                periodista: "",
+                                agencia: "",
+                                boletin: "",
+             } });
         });
     }
-
+    
     componentWillMount() {
         this.handleReload();
     }
@@ -43,9 +54,23 @@ class Noticias extends React.Component {
     }
 
     handleChangeNoticia(data) {
-        console.log("CURRENT NOTICIA IS:");
-        console.log(data);
-        this.setState({noticia: data})
+        fetch('/server/index.php/clasificadas?noticia='+data.idNoticia)
+        .then((response) => {
+            console.log(response);
+            return response.json();
+        })
+        .then((response) => {
+            console.log("CLASIFICADAS SON: ");
+            console.log(response);
+            let checkedCats = [];
+            for(let i=0;i<response.length;i++){
+                checkedCats[response[i].categoria] = true;
+            }
+            this.setState({
+                noticia: data,
+                checkedCats: checkedCats
+            })
+        });        
     }
 
   render() {
@@ -54,7 +79,7 @@ class Noticias extends React.Component {
         	<Header/>
         	<Row className="appContainer">
         		<Col sm="12" md="12" lg="8" xl="8">
-        			<NoticiasForm noticia={this.state.noticia} handleChangeData={this.handleChangeData}/>
+        			<NoticiasForm noticia={this.state.noticia} checkedCats={this.state.checkedCats} handleChangeData={this.handleChangeData}/>
         		</Col>
         		<Col sm="12" md="12" lg="4" xl="4">
         			<NoticiasList noticias={this.state.noticias} handleChangeNoticia={this.handleChangeNoticia}/>

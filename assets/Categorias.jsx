@@ -30,7 +30,15 @@ class Categorias extends React.Component {
         .then((data) => {
             console.log("handleReload");
             console.log(data);
-            this.setState({ categorias: data });
+            this.setState({ 
+                categorias: data,
+                categoria: {
+                    idCategoria:"",
+                    nombre:"",
+                    zona:"",
+                    encargado:"",
+                }
+            });
         });
     }
 

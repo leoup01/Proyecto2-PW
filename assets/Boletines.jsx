@@ -30,7 +30,14 @@ class Boletines extends React.Component {
         .then((data) => {
             console.log("handleReload");
             console.log(data);
-            this.setState({ boletines: data });
+            this.setState({ 
+                boletines: data,
+                boletin: {
+                    idBoletin:0,
+                    numero:"",
+                    fecha:"",
+                }
+            });
         });
     }
 

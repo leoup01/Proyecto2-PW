@@ -608,6 +608,21 @@
             }
         }
 
+        function getLast($id=null) {
+            $dbh = $this->init();
+            try {
+                $stmt = $dbh->prepare("SELECT * FROM  noticias ORDER BY idNoticia DESC LIMIT 1");
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
         function put($id=null) {
             $dbh = $this->init();
             try {
@@ -631,7 +646,7 @@
                 $stmt->bindParam(':boletin', $boletin);
                 $dbh->beginTransaction();
                 $stmt->execute();
-                $dbh->commit();
+                $dbh->commit();                
                 echo 'Successfull';
             } catch (Exception $e) {
                 $dbh->rollBack();
@@ -662,28 +677,32 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
-                $fecha = $_POST['fecha'];
-                $lugar = $_POST['lugar'];
-                $titulo = $_POST['titulo'];
-                $cuerpo = $_POST['cuerpo'];
-                $periodista = $_POST['periodista'];
-                $agencia = $_POST['agencia'];
-                $boletin = $_POST['boletin'];
-                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("UPDATE noticias SET fecha=:fecha, lugar=:lugar, titulo=:titulo, cuerpo=:cuerpo,
-                                        periodista=:periodista, agencia=:agencia, boletin=:boletin WHERE idNoticia = :id");
-                $stmt->bindParam(':id', $id);
-                $stmt->bindParam(':fecha', $fecha);
-                $stmt->bindParam(':lugar', $lugar);
-                $stmt->bindParam(':titulo', $titulo);
-                $stmt->bindParam(':cuerpo', $cuerpo);
-                $stmt->bindParam(':periodista', $periodista);
-                $stmt->bindParam(':agencia', $agencia);
-                $stmt->bindParam(':boletin', $boletin);
-                $dbh->beginTransaction();
-                $stmt->execute();
-                $dbh->commit();
-                echo 'Successfull';
+                else if ($_POST['method']=='getLast')
+                    return $this->getLast($id);
+                else{
+                    $fecha = $_POST['fecha'];
+                    $lugar = $_POST['lugar'];
+                    $titulo = $_POST['titulo'];
+                    $cuerpo = $_POST['cuerpo'];
+                    $periodista = $_POST['periodista'];
+                    $agencia = $_POST['agencia'];
+                    $boletin = $_POST['boletin'];
+                    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    $stmt = $dbh->prepare("UPDATE noticias SET fecha=:fecha, lugar=:lugar, titulo=:titulo, cuerpo=:cuerpo,
+                                            periodista=:periodista, agencia=:agencia, boletin=:boletin WHERE idNoticia = :id");
+                    $stmt->bindParam(':id', $id);
+                    $stmt->bindParam(':fecha', $fecha);
+                    $stmt->bindParam(':lugar', $lugar);
+                    $stmt->bindParam(':titulo', $titulo);
+                    $stmt->bindParam(':cuerpo', $cuerpo);
+                    $stmt->bindParam(':periodista', $periodista);
+                    $stmt->bindParam(':agencia', $agencia);
+                    $stmt->bindParam(':boletin', $boletin);
+                    $dbh->beginTransaction();
+                    $stmt->execute();
+                    $dbh->commit();
+                    echo 'Successfull';
+                }
             } catch (Exception $e) {
                 $dbh->rollBack();
                 echo "Failed: " . $e->getMessage();
@@ -759,11 +778,8 @@
             try {
                 $_DELETE=json_decode(file_get_contents('php://input'), True);
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $noticia = $_DELETE['noticia'];
-                $categoria = $_DELETE['categoria'];
-                $stmt = $dbh->prepare("DELETE FROM clasificadas WHERE noticia = :noticia AND categoria = :categoria");
-                $stmt->bindParam(':noticia', $noticia);
-                $stmt->bindParam(':categoria', $categoria);
+                $stmt = $dbh->prepare("DELETE FROM clasificadas WHERE noticia = :id");
+                $stmt->bindParam(':id', $id);
                 $dbh->beginTransaction();
                 $stmt->execute();
                 $dbh->commit();
@@ -782,17 +798,19 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
-                $noticia = $_POST['noticia'];
-                $categoria = $_POST['categoria'];
-                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("UPDATE clasificadas SET noticia=:noticia, categoria =:categoria
-                                        WHERE noticia = :noticia AND categoria = :categoria");
-                $stmt->bindParam(':noticia', $noticia);
-                $stmt->bindParam(':categoria', $categoria);
-                $dbh->beginTransaction();
-                $stmt->execute();
-                $dbh->commit();
-                echo 'Successfull';
+                else{
+                    $noticia = $_POST['noticia'];
+                    $categoria = $_POST['categoria'];
+                    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    $stmt = $dbh->prepare("UPDATE clasificadas SET noticia=:noticia, categoria =:categoria
+                                            WHERE noticia = :noticia AND categoria = :categoria");
+                    $stmt->bindParam(':noticia', $noticia);
+                    $stmt->bindParam(':categoria', $categoria);
+                    $dbh->beginTransaction();
+                    $stmt->execute();
+                    $dbh->commit();
+                    echo 'Successfull';
+                }
             } catch (Exception $e) {
                 $dbh->rollBack();
                 echo "Failed: " . $e->getMessage();

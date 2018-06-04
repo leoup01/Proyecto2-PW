@@ -7,6 +7,23 @@ var FormText = Reactstrap.FormText;
 var Row = Reactstrap.Row;
 var Col = Reactstrap.Col;
 
+const initialState = {
+        idNoticia:"",
+        fecha:"",
+        lugar:"",
+        titulo:"",
+        cuerpo:"",
+        periodista: "",
+        agencia: "",
+        boletin: "",
+        noticias:[],
+        periodistas: [],
+        agencias: [],
+        categorias: [],
+        checkedCats: [],
+        boletines: []
+    }
+
 class NoticiasForm extends React.Component {
     constructor(props) {
         super(props);
@@ -16,12 +33,14 @@ class NoticiasForm extends React.Component {
             lugar:"",
             titulo:"",
             cuerpo:"",
-            periodista:"",
-            agencia:"",
-            boletin:"",
+            periodista: "",
+            agencia: "",
+            boletin: "",
             noticias:[],
             periodistas: [],
             agencias: [],
+            categorias: [],
+            checkedCats: [],
             boletines: []
         }
         this.handleInsert = this.handleInsert.bind(this);
@@ -29,25 +48,14 @@ class NoticiasForm extends React.Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.handleFields = this.handleFields.bind(this);
     }
+
+    
     
     componentDidMount(){
-        /*
-        fetch('/server/index.php/periodistas')
-            .then((response) => {
-                console.log(response);
-                return response.json()
-            })
-            .then((data) => {
-                pers = data
-                console.log("PERIODISTAS SON:");
-                console.log(data);
-                this.setState({ periodistas: data });
-            });
-        */
         let pers;
         let ags;
         let bols;
-
+        let cats;    
         fetch('/server/index.php/periodistas')
             .then((response) => {
                 console.log(response);
@@ -57,6 +65,16 @@ class NoticiasForm extends React.Component {
                 pers = data;
                 console.log("PERIODISTAS SON:");
                 console.log(data);
+            }).then(_ => {
+                fetch('/server/index.php/categorias')
+                    .then((response) => {
+                        console.log(response);
+                        return response.json()
+                    }).then((data) => {
+                        cats = data;
+                        console.log("CATEGORIAS SON:");
+                        console.log(data);
+                    })
             }).then(_ => {
                 fetch('/server/index.php/agencias')
                     .then((response) => {
@@ -80,7 +98,8 @@ class NoticiasForm extends React.Component {
                         this.setState({ 
                             periodistas: pers,
                             agencias: ags,
-                            boletines: bols
+                            boletines: bols,
+                            categorias: cats
                         });
                     })
             });            
@@ -96,9 +115,11 @@ class NoticiasForm extends React.Component {
        this.setState({agencia:nextProps.noticia.agencia});
        this.setState({boletin:nextProps.noticia.boletin});
        this.setState({noticias:nextProps.noticia.noticias});
+       this.setState({checkedRaw:nextProps.checkedRaw});
+       this.setState({checkedCats:nextProps.checkedCats});
     }
 
-    handleInsert() {
+    handleInsert() {        
       console.log("INSERT");
       console.log(this.state);
       fetch("/server/index.php/noticias/"+this.state.idNoticia,{
@@ -115,18 +136,36 @@ class NoticiasForm extends React.Component {
             agencia: this.state.agencia,
             boletin: this.state.boletin
                    })
-      }).then((response) => {
-            console.log("THE FUCKING RESPONSE IS:");
-            console.log(response);
-            this.props.handleChangeData();
-        }
-      );
+      }).then((response) =>{
+            fetch("/server/index.php/noticias",{
+                method: "post",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    method: 'getLast'
+                })
+            }).then((response) => {
+                return response.json()
+            }).then((data) =>{
+                this.state.checkedCats.forEach((item,index) =>{
+                    if(item === true){
+                        fetch("/server/index.php/clasificadas",{
+                            method: "post",
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                method: 'put',
+                                noticia: data[0].idNoticia,
+                                categoria: index
+                            })
+                        });
+                    }
+                });
+                this.props.handleChangeData();
+            })                
+        });
     }
 
-    handleUpdate() {
-      console.log("UPDATE");
-      console.log(this.state);
-      console.log(this.state.idNoticia);
+    handleUpdate() {      
+        
       fetch("/server/index.php/noticias/"+this.state.idNoticia,{
           method: "post",
           headers: {'Content-Type': 'application/json'},
@@ -141,11 +180,27 @@ class NoticiasForm extends React.Component {
             boletin: this.state.boletin
           })
       }).then((response) => {
-            console.log(response);
-            console.log(this.props);
-            this.props.handleChangeData();
-          }
-      );
+            fetch("/server/index.php/clasificadas/"+this.state.idNoticia,{
+                method: "post",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ method: 'delete'})
+            }).then((response) =>{
+                this.state.checkedCats.forEach((item,index) =>{
+                    if(item === true){
+                        fetch("/server/index.php/clasificadas",{
+                            method: "post",
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                method: 'put',
+                                noticia: this.state.idNoticia,
+                                categoria: index
+                            })
+                        });
+                    }
+                });
+                this.props.handleChangeData();
+            })
+        });
     }
 
     handleDelete() {
@@ -155,18 +210,39 @@ class NoticiasForm extends React.Component {
         body: JSON.stringify({ method: 'delete'})
       }).then((response) => {
           this.props.handleChangeData();
-        }
-      );
+        });
     }
 
     handleFields(event) {
-     const target = event.target;
+     /*const target = event.target;
      const value = target.value;
      const name = target.name;
-     this.setState({[name]: value});
+     this.setState({[name]: value});*/
+     const target = event.target;
+     console.log("OPT IS:");
+     console.log(target);
+     const checkid = target.getAttribute('checkid');
+     console.log("CHECKID IS:");
+     console.log(checkid);
+        if(target.type === 'checkbox'){
+            const checkid = target.getAttribute('checkid');
+            const value = target.checked;
+            let copy = this.state.checkedCats;
+            copy[checkid] = value;
+            this.setState({
+                checkedCats: copy
+            });          
+        }else{
+            const value = target.value;
+            const name = target.name;
+            this.setState({[name]: value});
+        }     
     }
 
     render() {
+        console.log("ESTADO ACTUAL ES:");
+        console.log(this.state.checkedCats);
+
 
       const perOpts = this.state.periodistas.map((periodista) => 
         <option value={periodista.idPeriodista}>{periodista.nombre}</option>
@@ -177,8 +253,13 @@ class NoticiasForm extends React.Component {
       const bolOpts = this.state.boletines.map((boletin) => 
         <option value={boletin.idBoletin}>{boletin.numero}</option>
       );
-      console.log("RENDER NOTICIASFORM");
-      console.log(this.state);
+      const catOpts = this.state.categorias.map((categoria,index) => 
+        <FormGroup check inline>
+          <Label check>
+             <Input type="checkbox" checkid={categoria.idCategoria} checked={this.state.checkedCats[categoria.idCategoria] === true} value={categoria.idCategoria} onChange={this.handleFields}/> {categoria.nombre}
+          </Label>
+        </FormGroup>
+      );
         return(
           <div>
             <h2>Manejo de noticias</h2>
@@ -277,6 +358,14 @@ class NoticiasForm extends React.Component {
                                 > 
                                 {bolOpts}
                                 </Input>
+                        </div>
+                    </Col>                    
+                </Row>
+                <Row>
+                    <Col sm="12" md="12" lg="8" xl="8">  
+                    <Label for="categoriasInput" className="form-label">Clasificar</Label>                      
+                        <div className="form-group">
+                            {catOpts}
                         </div>
                     </Col>
                 </Row>
