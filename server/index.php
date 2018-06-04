@@ -608,6 +608,26 @@
             }
         }
 
+        function getByBoletin($id=null) {
+            $dbh = $this->init();
+            try {
+                if ($id!=null) {
+                    $stmt = $dbh->prepare("SELECT * FROM noticias WHERE boletin = :id");
+                    $stmt->bindParam(':id', $id);
+                } else {
+                    $stmt = $dbh->prepare("SELECT * FROM noticias");
+                }
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
         function getLast($id=null) {
             $dbh = $this->init();
             try {
@@ -679,6 +699,8 @@
                     return $this->delete($id);
                 else if ($_POST['method']=='getLast')
                     return $this->getLast($id);
+                else if ($_POST['method']=='getByBoletin')
+                    return $this->getByBoletin($id);
                 else{
                     $fecha = $_POST['fecha'];
                     $lugar = $_POST['lugar'];
