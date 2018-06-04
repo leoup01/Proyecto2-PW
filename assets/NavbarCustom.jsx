@@ -39,7 +39,7 @@ class NavbarCustom extends React.Component {
           }
   }
   render() {
-    const navbarItemAdmin = (this.state.rol === 'Administrador')?
+    const navbarItemsAdmin = (this.state.rol === 'Administrador')?
                     <Nav navbar>
                       <NavItem>
                         <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
@@ -47,7 +47,7 @@ class NavbarCustom extends React.Component {
                       <NavItem>
                         <b><NavLink className="text-white" href="/usuarios">Usuarios</NavLink></b>
                       </NavItem>
-                      </Nav>
+                    </Nav>
                     :null;
     return (
         <Navbar dark expand="md">
@@ -56,24 +56,45 @@ class NavbarCustom extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
               <NavItem>
-                <b><NavLink className="text-white" href="/noticias">Noticias</NavLink></b>
-              </NavItem>
-              <NavItem>
-                <b><NavLink className="text-white" href="/boletines">Boletines</NavLink></b>
-              </NavItem>
-              <NavItem>
-                <b><NavLink className="text-white" href="/categorias">Categorías</NavLink></b>
-              </NavItem>
-              <NavItem>
-                <b><NavLink className="text-white" href="/periodistas">Periodistas</NavLink></b>
-              </NavItem>
-              <NavItem>
-                <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
+                <b><NavLink className="text-white" href="/boletinesDetalle">Ver Boletines</NavLink></b>
               </NavItem>
               <NavItem>
                 <b><NavLink className="text-white" href="/micuenta">Mi Cuenta</NavLink></b>
               </NavItem>
-              {navbarItemAdmin}
+                
+              {
+                ((this.state.rol === 'Periodista') || (this.state.rol === 'Jefe de redacción') || (this.state.rol === 'Administrador'))?
+                    <Nav navbar>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/noticias">Noticias</NavLink></b>
+                      </NavItem>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/boletines">Boletines</NavLink></b>
+                      </NavItem>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/periodistas">Periodistas</NavLink></b>
+                      </NavItem>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
+                      </NavItem>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/categorias">Categorías</NavLink></b>
+                      </NavItem>
+                    </Nav>
+                    :null
+              }
+              {
+                (this.state.rol === 'Administrador')?
+                    <Nav navbar>
+                      <NavItem>
+                        <b><NavLink className="text-white" href="/usuarios">Usuarios</NavLink></b>
+                      </NavItem>
+                    </Nav>
+                    :null
+              }
+
+
+
             </Nav>
             <Nav className="ml-auto" navbar>
               <Form inline>

@@ -77,13 +77,13 @@ class SignUp extends React.Component {
       <div className="container-login">
         <div className="box-login">
           <Form onSubmit={this.onSubmit}>
-            <h1 className="title-1">Login</h1>
+            <h1 className="title-1">Registro</h1>
             <FormGroup> 
             <Input
               value={email}
               onChange={event => this.setState(byPropKey('email', event.target.value))}
               type="text"
-              placeholder="Correo electrónico"
+              placeholder="Usuario"
             />
             </FormGroup> 
             <FormGroup> 
@@ -96,7 +96,7 @@ class SignUp extends React.Component {
             </FormGroup> 
             <div className="center-flex">
               <Button disabled={isInvalid} type="submit" className="button button-1 center-flex">
-                Ingresar
+                Registrarse
               </Button>
             </div>
             { error && <p>{error}</p> }

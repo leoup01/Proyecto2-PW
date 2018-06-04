@@ -113,6 +113,8 @@ class UsuariosForm extends React.Component {
                             value={this.state.rol}
                             onChange={this.handleFields}>
                             <option>Normal</option>
+                            <option>Periodista</option>
+                            <option>Jefe de redacción</option>
                             <option>Administrador</option>
                           </Input> 
                     </div>
