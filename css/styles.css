@@ -5,6 +5,15 @@ body{
     background: #E8F0ED;
 }
 
+.card{
+    margin-bottom: 1em;
+}
+
+.card-header{
+    background: #53575A !important;
+    color: white;
+}
+
 .tableSelectedItem{
     background-color: #B1B8B5; 
 }
