@@ -14,7 +14,7 @@ class CategoriasForm extends React.Component {
             idCategoria:"",
             nombre:"",
             zona:"",
-            encargado:"",
+            encargado:1,
             categorias:[],
             periodistas: [],
             rol: this.props.rol

@@ -38,10 +38,12 @@ class Noticias extends React.Component {
                                 lugar:"",
                                 titulo:"",
                                 cuerpo:"",
-                                periodista: "",
-                                agencia: "",
-                                boletin: "",
-             } });
+                                periodista: 1,
+                                agencia: 1,
+                                boletin: 1
+                        },
+                        checkedCats: [-1]
+            });
         });
     }
     

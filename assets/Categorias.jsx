@@ -51,7 +51,7 @@ class Categorias extends React.Component {
                     idCategoria:"",
                     nombre:"",
                     zona:"",
-                    encargado:"",
+                    encargado:1,
                 }
             });
         });

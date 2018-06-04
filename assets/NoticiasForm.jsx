@@ -7,23 +7,6 @@ var FormText = Reactstrap.FormText;
 var Row = Reactstrap.Row;
 var Col = Reactstrap.Col;
 
-const initialState = {
-        idNoticia:"",
-        fecha:"",
-        lugar:"",
-        titulo:"",
-        cuerpo:"",
-        periodista: "",
-        agencia: "",
-        boletin: "",
-        noticias:[],
-        periodistas: [],
-        agencias: [],
-        categorias: [],
-        checkedCats: [],
-        boletines: []
-    }
-
 class NoticiasForm extends React.Component {
     constructor(props) {
         super(props);
@@ -33,9 +16,9 @@ class NoticiasForm extends React.Component {
             lugar:"",
             titulo:"",
             cuerpo:"",
-            periodista: "",
-            agencia: "",
-            boletin: "",
+            periodista: 1,
+            agencia: 1,
+            boletin: 1,
             noticias:[],
             periodistas: [],
             agencias: [],
