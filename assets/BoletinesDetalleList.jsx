@@ -17,12 +17,13 @@ class BoletinesDetalleList extends React.Component {
             render() {
               console.log("RENDER BOLETINESLIST");
               if (this.props.boletines.length > 0) {
-                const thead = <thead className="thead-dark"><tr><th>Numero</th><th>Fecha</th></tr></thead>;
+                const thead = <thead className="thead-dark"><tr><th>Numero</th><th>Fecha</th><th>Estado</th></tr></thead>;
                 const rows = this.props.boletines.map((boletin,index) => 
                       <tr key={index} data-item={index}
                           onClick={this.handleDetails}>
                         <td>{boletin.numero}</td>
                         <td>{boletin.fecha}</td>
+                        <td>{this.props.unread.includes(boletin.idBoletin)?"Sin Leer":"Leído"}</td>
                       </tr>);
                 const tbody = <tbody>{rows}</tbody>;
                 return ( <Table className="table">{thead}{tbody}</Table> );

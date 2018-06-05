@@ -15,7 +15,10 @@ class Boletines extends React.Component {
     		boletines:[],
             boletin:[],
             noticias:[],
-            periodistas:[]
+            periodistas:[],
+            leido: false,
+            user: "",
+            unread: []        
 	  	}
 
 	  	this.handleReload = this.handleReload.bind(this);
@@ -26,7 +29,7 @@ class Boletines extends React.Component {
   	}
 
   	handleReload() {
-        fetch('/server/index.php/boletines')
+        /*fetch('/server/index.php/boletines')
         .then((response) => {
         console.log(response);
             return response.json()
@@ -34,8 +37,47 @@ class Boletines extends React.Component {
         .then((data) => {
             console.log("handleReload");
             console.log(data);
-            this.setState({ boletines: data });
-        });
+            let usuario = localStorage.getItem('userIdLS');
+            this.setState({ 
+                boletines: data,
+                user: usuario
+            });
+        });*/
+
+        let currentUser = localStorage.getItem('userIdLS');
+        let bols = [];
+        fetch('/server/index.php/boletines')
+        .then((response) => {
+        console.log(response);
+            return response.json();
+        })
+        .then((data) => {  
+            this.setState({boletines: data});       
+            fetch("/server/index.php/vistos",{
+                method: "post",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    method: 'getUnread',
+                    usuario: currentUser
+                })
+            }).then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                return data.map((item) => {
+                    return item.idBoletin;
+                });
+            }).then((response) => {
+                console.log("BOLETINES SONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN:");
+                console.log(bols);
+                this.setState({ 
+                    user: currentUser,
+                    unread: response
+                }); 
+                console.log("ESTADO ESSSSSSSSSSSSSSSSSSSSSSSSSSS:");
+                console.log(this.state);
+            });
+        });               
     }
 
     handleGetNoticias(id) {
@@ -104,12 +146,38 @@ class Boletines extends React.Component {
     }
 
     handleChangeBoletin(data) {
+
+        fetch('/server/index.php/vistos?usuario='+this.state.user+'&boletin='+data.idBoletin)
+            .then((response) => {
+                return response.json();
+            }).then((response) => {
+                console.log("LA RESPUESTA ES: ");
+                console.log(response);
+                if(response.length === 0){
+                    this.setState({
+                        boletin: data,
+                        leido: false
+                    });
+                    console.log(data.idBoletin);
+                    this.handleGetNoticias(data.idBoletin);
+                }else{
+                    this.setState({
+                        boletin: data,
+                        leido: true
+                    });
+                    console.log(data.idBoletin);
+                    this.handleGetNoticias(data.idBoletin);
+                }
+            });
+
+            /********************
         console.log("handleChangeBoletin");
         
         this.setState({boletin: data});
         console.log(data.idBoletin);
         this.handleGetNoticias(data.idBoletin);
         //this.handleGetNoticias
+        ***********************/
     }
 
   render() {
@@ -122,11 +190,15 @@ class Boletines extends React.Component {
                     <BoletinesDetalleNoticiasList
                         noticias={this.state.noticias}
                         periodistas={this.state.periodistas}
-                        handleChangeBoletin={this.handleChangeBoletin}/>
+                        handleChangeBoletin={this.handleChangeBoletin}
+                        handleChangeData={this.handleChangeData}
+                        boletin={this.state.boletin.idBoletin}
+                        user={this.state.user}
+                        leido={this.state.leido}/>                         
                 </Col>
         		<Col sm="12" md="12" lg="4" xl="4">
                     <h2>Boletines</h2>
-        			<BoletinesDetalleList boletines={this.state.boletines} handleChangeBoletin={this.handleChangeBoletin}/>
+        			<BoletinesDetalleList boletines={this.state.boletines} unread={this.state.unread} handleChangeBoletin={this.handleChangeBoletin}/>
         		</Col>
         	</Row>
         </div>

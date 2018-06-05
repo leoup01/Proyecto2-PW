@@ -120,10 +120,12 @@ class MiCuentaForm extends React.Component {
                     });
                 }
             });            
-            this.setState({
+            /*this.setState({
               checkedCats: [-1]
             });
             this.props.handleChangeData();
+            */
+           window.location.href = "/micuenta";
           })
         });
     }

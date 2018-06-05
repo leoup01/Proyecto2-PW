@@ -990,6 +990,26 @@
             }
         }
 
+        function getUnread($id=null) {
+            $dbh = $this->init();
+            try {
+                $usuario = $_POST['usuario'];
+                $stmt = $dbh->prepare("SELECT idBoletin, numero, fecha FROM boletines 
+                                        LEFT JOIN vistos ON boletines.idBoletin = vistos.boletin AND vistos.usuario = :usuario 
+                                        WHERE vistos.boletin IS NULL");
+                $stmt->bindParam(':usuario', $usuario);
+                
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
         function put($id=null) {
             $dbh = $this->init();
             try {
@@ -1039,17 +1059,21 @@
                     return $this->put($id);
                 else if ($_POST['method']=='delete')
                     return $this->delete($id);
-                $usuario = $_POST['usuario'];
-                $boletin = $_POST['boletin'];
-                $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $stmt = $dbh->prepare("UPDATE vistos SET usuario=:usuario, boletin =:boletin
-                                        WHERE usuario = :usuario AND boletin = :boletin");
-                $stmt->bindParam(':usuario', $usuario);
-                $stmt->bindParam(':boletin', $boletin);
-                $dbh->beginTransaction();
-                $stmt->execute();
-                $dbh->commit();
-                echo 'Successfull';
+                else if ($_POST['method']=='getUnread')
+                    return $this->getUnread($id);
+                else{
+                    $usuario = $_POST['usuario'];
+                    $boletin = $_POST['boletin'];
+                    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    $stmt = $dbh->prepare("UPDATE vistos SET usuario=:usuario, boletin =:boletin
+                                            WHERE usuario = :usuario AND boletin = :boletin");
+                    $stmt->bindParam(':usuario', $usuario);
+                    $stmt->bindParam(':boletin', $boletin);
+                    $dbh->beginTransaction();
+                    $stmt->execute();
+                    $dbh->commit();
+                    echo 'Successfull';
+                }
             } catch (Exception $e) {
                 $dbh->rollBack();
                 echo "Failed: " . $e->getMessage();
