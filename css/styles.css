@@ -13,6 +13,10 @@ body{
     background: #53575A !important;
     color: white;
 }
+.card-img-top{
+    min-width: 70px;
+    max-width: 200px;
+}
 
 .card-text-result{
     font-size: 1.875em;
