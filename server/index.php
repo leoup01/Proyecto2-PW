@@ -643,6 +643,21 @@
             }
         }
 
+        function getLatest($id=null) {
+            $dbh = $this->init();
+            try {
+                $stmt = $dbh->prepare("SELECT * FROM  noticias ORDER BY idNoticia DESC LIMIT 10");
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
         function put($id=null) {
             $dbh = $this->init();
             try {
@@ -699,6 +714,8 @@
                     return $this->delete($id);
                 else if ($_POST['method']=='getLast')
                     return $this->getLast($id);
+                else if ($_POST['method']=='getLatest')
+                    return $this->getLatest($id);
                 else if ($_POST['method']=='getByBoletin')
                     return $this->getByBoletin($id);
                 else{

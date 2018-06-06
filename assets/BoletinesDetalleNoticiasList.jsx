@@ -70,6 +70,15 @@ class BoletinesDetalleNoticiasList extends React.Component {
   render() {
     console.log("RENDER BOLETINES Noticias LIST");
     console.log(this.props.periodistas);
+    const hr = (this.props.hiddenRead === 'false')?
+                  <Form>
+                    <Label check>
+                    <Input name="leido" type="checkbox" onChange={this.handleFields} checked={this.state.leido}/> {'Marcar como leído'} {' '}
+                    </Label>
+                    <Input type="hidden" name="id" value={this.state.boletin}/>&nbsp;
+                    <Button onClick={this.handleSave} className="button-sm button1">Guardar</Button>
+                  </Form>
+                  :null;
     if (this.props.noticias.length > 0) { 
         const cards = this.props.noticias.map((noticia, index) =>
           <Card className="car-header-back">
@@ -81,13 +90,7 @@ class BoletinesDetalleNoticiasList extends React.Component {
           </Card>);
         return (  <div>
                   {cards}
-                  <Form>
-                    <Label check>
-                    <Input name="leido" type="checkbox" onChange={this.handleFields} checked={this.state.leido}/> {'Marcar como leído'} {' '}
-                    </Label>
-                    <Input type="hidden" name="id" value={this.state.boletin}/>&nbsp;
-                    <Button onClick={this.handleSave} className="button-sm button1">Guardar</Button>
-                  </Form>
+                  {hr}
                 </div> );
     }
       return (<p></p>)

@@ -8,7 +8,7 @@ var Label = Reactstrap.Label;
 var Input = Reactstrap.Input;
 var FormText = Reactstrap.FormText;
 
-class Boletines extends React.Component {
+class Dashboard extends React.Component {
     constructor(props) {
     	super(props);
     	this.state = {
@@ -18,7 +18,12 @@ class Boletines extends React.Component {
             periodistas:[],
             leido: false,
             user: "",
-            unread: []        
+            unread: [],
+            noticiasCount:0,
+            boletinesCount:0,
+            periodistasCount:0,
+            categoriasCount:0,
+            agenciasCount:0      
 	  	}
 
 	  	this.handleReload = this.handleReload.bind(this);
@@ -26,33 +31,58 @@ class Boletines extends React.Component {
         this.handleChangeData = this.handleChangeData.bind(this);
         this.handleGetNoticias = this.handleGetNoticias.bind(this);
         this.handleGetPeriodistas = this.handleGetPeriodistas.bind(this);
+        this.handleGetInfo = this.handleGetInfo.bind(this);
   	}
 
-  	handleReload() {
-        /*fetch('/server/index.php/boletines')
-        .then((response) => {
-        console.log(response);
-            return response.json()
-        })
-        .then((data) => {
-            console.log("handleReload");
-            console.log(data);
-            let usuario = localStorage.getItem('userIdLS');
-            this.setState({ 
-                boletines: data,
-                user: usuario
-            });
-        });*/
+    handleGetInfo (){
+      fetch('/server/index.php/noticias')
+           .then((response) => {
+            console.log(response);
+               return response.json()
+           })
+           .then((data) => {
+               this.setState({ noticiasCount: data.length });
+        });
+      fetch('/server/index.php/periodistas')
+           .then((response) => {
+            console.log(response);
+               return response.json()
+           })
+           .then((data) => {
+               this.setState({ periodistasCount: data.length });
+      });
+      fetch('/server/index.php/categorias')
+           .then((response) => {
+            console.log(response);
+               return response.json()
+           })
+           .then((data) => {
+               this.setState({ categoriasCount: data.length });
+      });
+      fetch('/server/index.php/agencias')
+           .then((response) => {
+            console.log(response);
+               return response.json()
+           })
+           .then((data) => {
+               this.setState({ agenciasCount: data.length });
+      });
+    }
 
+  	handleReload() {
         let currentUser = localStorage.getItem('userIdLS');
         let bols = [];
+        this.handleGetInfo();
+        this.handleGetNoticias();
+
         fetch('/server/index.php/boletines')
         .then((response) => {
         console.log(response);
             return response.json();
         })
         .then((data) => {  
-            this.setState({boletines: data});       
+            this.setState({boletines: data}); 
+            this.setState({ boletinesCount: data.length });      
             fetch("/server/index.php/vistos",{
                 method: "post",
                 headers: {'Content-Type': 'application/json'},
@@ -80,12 +110,12 @@ class Boletines extends React.Component {
         });               
     }
 
-    handleGetNoticias(id) {
-          fetch('/server/index.php/noticias/'+id,{
+    handleGetNoticias() {
+          fetch('/server/index.php/noticias/',{
             method: "post",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                method: 'getByBoletin'
+                method: 'getLatest'
             })
         })
                .then((response) => {
@@ -159,14 +189,14 @@ class Boletines extends React.Component {
                         leido: false
                     });
                     console.log(data.idBoletin);
-                    this.handleGetNoticias(data.idBoletin);
+                    this.handleGetNoticias();
                 }else{
                     this.setState({
                         boletin: data,
                         leido: true
                     });
                     console.log(data.idBoletin);
-                    this.handleGetNoticias(data.idBoletin);
+                    this.handleGetNoticias();
                 }
             });
 
@@ -186,7 +216,7 @@ class Boletines extends React.Component {
         	<Header/>
         	<Row className="appContainer">
         		<Col sm="12" md="12" lg="8" xl="8">
-                    <h2>Detalle de noticias del boletin</h2>
+                    <h2>Últimas noticias</h2>
                     <BoletinesDetalleNoticiasList
                         noticias={this.state.noticias}
                         periodistas={this.state.periodistas}
@@ -195,11 +225,18 @@ class Boletines extends React.Component {
                         boletin={this.state.boletin.idBoletin}
                         user={this.state.user}
                         leido={this.state.leido}
-                        hiddenRead='false'/>                         
+                        hiddenRead='true'/>                         
                 </Col>
         		<Col sm="12" md="12" lg="4" xl="4">
-                    <h2>Boletines</h2>
-        			<BoletinesDetalleList boletines={this.state.boletines} unread={this.state.unread} handleChangeBoletin={this.handleChangeBoletin}/>
+                    <h2>Información de la página</h2>
+                      <DashboardCard imagen="assets/user-icon.png" title="Visita tu cuenta" result="Bienvenido" link="/micuenta"/>
+                      <DashboardCard imagen="assets/news-icon.png" title="Noticias" result={this.state.noticiasCount} link="/boletinesDetalle"/>
+                      <DashboardCard imagen="assets/boletin-icon.png" title="Boletines" result={this.state.boletinesCount} link="/boletinesDetalle"/>
+                      <DashboardCard imagen="assets/periodista-icon.png" title="Periodistas" result={this.state.periodistasCount} link="/periodistas"/>
+                      <DashboardCard imagen="assets/categorias-icon.png" title="Categorias" result={this.state.categoriasCount} link="/categorias"/>
+                      <DashboardCard imagen="assets/agencias-icon.png" title="Agencias" result={this.state.agenciasCount} link="/agencias"/>
+
+        			     
         		</Col>
         	</Row>
         </div>
@@ -208,4 +245,4 @@ class Boletines extends React.Component {
   }
  }
 
-ReactDOM.render(<Boletines/>, document.getElementById('root'));
+ReactDOM.render(<Dashboard/>, document.getElementById('root'));
