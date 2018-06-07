@@ -608,6 +608,23 @@
             }
         }
 
+        function search($id=null) {
+            $dbh = $this->init();
+            try {
+                $term = "%".$_POST['term']."%";
+                $stmt = $dbh->prepare("SELECT * FROM noticias WHERE cuerpo LIKE :term OR titulo LIKE :term");
+                $stmt->bindValue(':term', $term, PDO::PARAM_STR);
+                $stmt->execute();               
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
         function getByBoletin($id=null) {
             $dbh = $this->init();
             try {
@@ -718,6 +735,8 @@
                     return $this->getLatest($id);
                 else if ($_POST['method']=='getByBoletin')
                     return $this->getByBoletin($id);
+                else if ($_POST['method']=='search')
+                    return $this->search($id);
                 else{
                     $fecha = $_POST['fecha'];
                     $lugar = $_POST['lugar'];

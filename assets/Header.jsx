@@ -4,8 +4,14 @@ var Jumbotron = Reactstrap.Jumbotron;
 
 class Header extends React.Component {
     constructor(props) {
-        super(props);
-    }
+				super(props);
+				this.handleSearch = this.handleSearch.bind(this);
+		}
+		
+		handleSearch(term) {
+			this.props.handleSearch(term);
+		}
+
     render() {
         return (
         	<div>
@@ -22,7 +28,7 @@ class Header extends React.Component {
 	                  </Col>
 	                </Row>
 	              </Jumbotron>
-	              <NavbarCustom/>
+	              <NavbarCustom handleSearch={this.handleSearch}/>
             </div>
         );
     }

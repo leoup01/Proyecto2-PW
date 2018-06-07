@@ -16,9 +16,24 @@ class NavbarCustom extends React.Component {
     this.handleGetRol = this.handleGetRol.bind(this);
     this.state = {
       isOpen: false,
-      rol: this.handleGetRol()
+      rol: this.handleGetRol(),
+      term: ""
     };
+
+    this.handleChangeTerm = this.handleChangeTerm.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
+
+  handleChangeTerm(event) {
+    const target = event.target;
+    const value = target.value;
+    this.setState({term: value});
+  }
+
+  handleSearch() {
+    this.props.handleSearch(this.state.term);
+  }
+
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
@@ -98,8 +113,9 @@ class NavbarCustom extends React.Component {
             </Nav>
             <Nav className="ml-auto" navbar>
               <Form inline>
-          			<Input className="form-control mb-2 mr-sm-2 mb-sm-0" type="search" placeholder="Search" aria-label="Search"/>
-          			<Button className="btn btn-outline-success mb-2 mr-sm-2 mb-sm-0" type="submit">Search</Button>
+                <Input className="form-control mb-2 mr-sm-2 mb-sm-0" type="text" placeholder="Search" aria-label="Search"
+                 value={this.state.term} onChange={this.handleChangeTerm}/>
+          			<Button className="btn btn-outline-success mb-2 mr-sm-2 mb-sm-0" type="button" onClick={this.handleSearch} >Search</Button>
         		  </Form>
               <NavItem>
                 <b><NavLink className="text-white button-sm button5" href="/login">Login</NavLink></b>

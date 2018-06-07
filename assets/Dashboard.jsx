@@ -32,6 +32,7 @@ class Dashboard extends React.Component {
         this.handleGetNoticias = this.handleGetNoticias.bind(this);
         this.handleGetPeriodistas = this.handleGetPeriodistas.bind(this);
         this.handleGetInfo = this.handleGetInfo.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
   	}
 
     handleGetInfo (){
@@ -98,16 +99,29 @@ class Dashboard extends React.Component {
                     return item.idBoletin;
                 });
             }).then((response) => {
-                console.log("BOLETINES SONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN:");
-                console.log(bols);
                 this.setState({ 
                     user: currentUser,
                     unread: response
                 }); 
-                console.log("ESTADO ESSSSSSSSSSSSSSSSSSSSSSSSSSS:");
-                console.log(this.state);
             });
         });               
+    }
+
+    handleSearch(searchTerm) {
+        console.log("SEARCH TERM IS: ");
+        console.log(searchTerm);
+        fetch('/server/index.php/noticias',{
+            method: "post",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                method: 'search',
+                term: searchTerm
+            })
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            this.setState({ noticias: data });
+       });
     }
 
     handleGetNoticias() {
@@ -213,7 +227,7 @@ class Dashboard extends React.Component {
   render() {
     return (
     	<div>
-        	<Header/>
+        	<Header handleSearch={this.handleSearch}/>
         	<Row className="appContainer">
         		<Col sm="12" md="12" lg="8" xl="8">
                     <h2>Últimas noticias</h2>
