@@ -70,20 +70,26 @@ class Categorias extends React.Component {
     }
 
   render() {
+    //console.log("ROL: "+this.state.rol);
+    const content = ((this.state.rol === 'Jefe de redacción') || (this.state.rol === 'Administrador'))?
+                      <Row className="appContainer">
+                        <Col sm="12" md="12" lg="8" xl="8">
+                            <CategoriasForm
+                                categoria={this.state.categoria}
+                                handleChangeData={this.handleChangeData}
+                                rol={this.state.rol}/>
+                        </Col>
+                        <Col sm="12" md="12" lg="4" xl="4">
+                            <CategoriasList categorias={this.state.categorias} handleChangeCategoria={this.handleChangeCategoria}/>
+                        </Col>
+                    </Row>
+                      :<Row className="appContainer">
+                        <p>No tiene los permisos requeridos para entrar a esta seccion</p>
+                        </Row>;
     return (
-    	<div>
-        	<Header/>
-        	<Row className="appContainer">
-        		<Col sm="12" md="12" lg="8" xl="8">
-        			<CategoriasForm
-                        categoria={this.state.categoria}
-                        handleChangeData={this.handleChangeData}
-                        rol={this.state.rol}/>
-        		</Col>
-        		<Col sm="12" md="12" lg="4" xl="4">
-        			<CategoriasList categorias={this.state.categorias} handleChangeCategoria={this.handleChangeCategoria}/>
-        		</Col>
-        	</Row>
+      <div>
+          <Header/>
+          {content}
         </div>
 
     );

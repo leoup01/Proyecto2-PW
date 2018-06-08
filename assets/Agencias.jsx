@@ -59,22 +59,25 @@ class Agencias extends React.Component {
     }
 
   render() {
-    console.log("RENDER AGENCIAS");
-    console.log(this.state);
+    const content = ((this.state.rol === 'Periodista') || (this.state.rol === 'Jefe de redacción') || (this.state.rol === 'Administrador'))?
+                      <Row className="appContainer">
+                        <Col sm="12" md="12" lg="4" xl="4">
+                          <AgenciasForm agencia={this.state.agencia}
+                            handleChangeData={this.handleChangeData}
+                            handleChangeAgencia={this.handleChangeAgencia}
+                            rol={this.state.rol}/>
+                        </Col>
+                        <Col sm="12" md="12" lg="8" xl="8">
+                          <AgenciasList agencias={this.state.agencias} handleChangeAgencia={this.handleChangeAgencia}/>
+                        </Col>
+                      </Row>
+                      :<Row className="appContainer">
+                        <p>No tiene los permisos requeridos para entrar a esta seccion</p>
+                        </Row>;
     return (
-    	<div>
-        	<Header/>
-        	<Row className="appContainer">
-            <Col sm="12" md="12" lg="4" xl="4">
-              <AgenciasForm agencia={this.state.agencia}
-                handleChangeData={this.handleChangeData}
-                handleChangeAgencia={this.handleChangeAgencia}
-                rol={this.state.rol}/>
-            </Col>
-            <Col sm="12" md="12" lg="8" xl="8">
-              <AgenciasList agencias={this.state.agencias} handleChangeAgencia={this.handleChangeAgencia}/>
-            </Col>
-          </Row>
+      <div>
+          <Header/>
+          {content}
         </div>
 
     );

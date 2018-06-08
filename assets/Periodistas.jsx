@@ -73,19 +73,24 @@ class Periodistas extends React.Component {
     }
 
   render() {
+    const content = ((this.state.rol === 'Periodista') || (this.state.rol === 'Jefe de redacción') || (this.state.rol === 'Administrador'))?
+                      <Row className="appContainer">
+                        <Col sm="12" md="12" lg="8" xl="8">
+                          <PeriodistasForm periodista={this.state.periodista}
+                            handleChangeData={this.handleChangeData}
+                            rol={this.state.rol}/>
+                        </Col>
+                        <Col sm="12" md="12" lg="4" xl="4">
+                          <PeriodistasList periodistas={this.state.periodistas} handleChangePeriodista={this.handleChangePeriodista}/>
+                        </Col>
+                      </Row>
+                      :<Row className="appContainer">
+                        <p>No tiene los permisos requeridos para entrar a esta seccion</p>
+                        </Row>;
     return (
-    	<div>
-        	<Header/>
-        	<Row className="appContainer">
-        		<Col sm="12" md="12" lg="8" xl="8">
-        			<PeriodistasForm periodista={this.state.periodista}
-                handleChangeData={this.handleChangeData}
-                rol={this.state.rol}/>
-        		</Col>
-        		<Col sm="12" md="12" lg="4" xl="4">
-        			<PeriodistasList periodistas={this.state.periodistas} handleChangePeriodista={this.handleChangePeriodista}/>
-        		</Col>
-        	</Row>
+      <div>
+          <Header/>
+          {content}
         </div>
 
     );
