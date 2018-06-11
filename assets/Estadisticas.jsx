@@ -164,32 +164,32 @@ class Estadisticas extends React.Component {
                                 <Container>
                                     <Col sm="12" md="12" lg="12" xl="12">
                                         <h2>Noticias por Día</h2>
-                                        <LineChart data={this.state.dataByDay} />
+                                        <LineChart data={this.state.dataByDay} colors={["#ff0000","#000000"]} library={{backgroundColor: "#FFFFFF"}} />
                                     </Col>
                                 </Container>
                             </Row>
                             <Row className="appContainer">
                                     <Col sm="12" md="12" lg="6" xl="6">
                                         <h2>Noticias por Periodista</h2>
-                                        <ColumnChart data={this.state.dataByJournalist} />
+                                        <ColumnChart data={this.state.dataByJournalist} colors={["#660066"]} />
                                     </Col>
                                     <Col sm="12" md="12" lg="6" xl="6">
                                         <h2>Noticias por Lugar</h2>
-                                        <ColumnChart data={this.state.dataByPlace} />
+                                        <ColumnChart data={this.state.dataByPlace} colors={["#ff9900"]}/>
                                     </Col>
                             </Row>
                             <Row className="appContainer">
                                     <Col sm="12" md="12" lg="4" xl="4">
                                         <h2>Noticias por Zona</h2>
-                                        <PieChart data={this.state.dataByZone} />
+                                        <PieChart data={this.state.dataByZone} colors={["#92a8d1","#034f84", "#f7cac9", "#f7786b", "#b1cbbb"]} />
                                     </Col>
                                     <Col sm="12" md="12" lg="4" xl="4">
                                         <h2>Noticias por Categoría</h2>
-                                        <PieChart data={this.state.dataByCategory} />
+                                        <PieChart data={this.state.dataByCategory} colors={["#6b5b95","#feb236", "#d64161", "#ff7b25", "#b2ad7f"]}/>
                                     </Col>
                                     <Col sm="12" md="12" lg="4" xl="4">
                                         <h2>Categorias Preferidas</h2>
-                                        <PieChart data={this.state.dataByPreference} />
+                                        <PieChart data={this.state.dataByPreference} donut={true} colors={["#ffef96","#50394c", "#b2b2b2", "#f4e1d2", "#618685"]}/>
                                     </Col>
                             </Row>
                         </div>
