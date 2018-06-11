@@ -625,6 +625,100 @@
             }
         }
 
+        function getNewsCountByDay($id=null) {
+            $dbh = $this->init();
+            try {
+                $stmt = $dbh->prepare("SELECT fecha, COUNT(*) AS cantidad FROM noticias GROUP BY fecha");
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function getNewsCountByPlace($id=null) {
+            $dbh = $this->init();
+            try {
+                $stmt = $dbh->prepare("SELECT lugar, COUNT(*) AS cantidad FROM noticias GROUP BY lugar");
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function getNewsCountByZone($id=null) {
+            $dbh = $this->init();
+            try {
+                $stmt = $dbh->prepare("SELECT zona, COUNT(*) AS cantidad FROM noticias, clasificadas, categorias
+                WHERE noticias.idNoticia = clasificadas.noticia AND clasificadas.categoria = categorias.idCategoria GROUP BY zona");
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function getNewsCountByCategory($id=null) {
+            $dbh = $this->init();
+            try {
+                $stmt = $dbh->prepare("SELECT nombre, COUNT(*) AS cantidad FROM noticias, clasificadas, categorias
+                WHERE noticias.idNoticia = clasificadas.noticia AND clasificadas.categoria = categorias.idCategoria GROUP BY nombre");
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function getCategoryPreference($id=null) {
+            $dbh = $this->init();
+            try {
+                $stmt = $dbh->prepare("SELECT nombre, COUNT(usuario) AS usuarios FROM preferidas, categorias
+                WHERE preferidas.categoria = categorias.idCategoria GROUP BY categoria;");
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
+        function getNewsCountByJournalist($id=null) {
+            $dbh = $this->init();
+            try {
+                $stmt = $dbh->prepare("SELECT nombre, COUNT(*) AS cantidad FROM noticias, periodistas, usuarios
+                WHERE noticias.periodista = periodistas.idPeriodista AND periodistas.usuario = usuarios.userId GROUP BY nombre");
+                $stmt->execute();
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+                echo "Failed: " . $e->getMessage();
+            }
+        }
+
         function getByBoletin($id=null) {
             $dbh = $this->init();
             try {
@@ -737,6 +831,20 @@
                     return $this->getByBoletin($id);
                 else if ($_POST['method']=='search')
                     return $this->search($id);
+                else if ($_POST['method']=='getNewsCountByDay')
+                    return $this->getNewsCountByDay($id);
+                else if ($_POST['method']=='getNewsCountByPlace')
+                    return $this->getNewsCountByPlace($id);
+                else if ($_POST['method']=='getNewsCountByZone')
+                    return $this->getNewsCountByZone($id);
+                else if ($_POST['method']=='getNewsCountByJournalist')
+                    return $this->getNewsCountByJournalist($id);
+                else if ($_POST['method']=='getNewsCountByDay')
+                    return $this->getNewsCountByDay($id);
+                else if ($_POST['method']=='getNewsCountByCategory')
+                    return $this->getNewsCountByCategory($id);
+                else if ($_POST['method']=='getCategoryPreference')
+                    return $this->getCategoryPreference($id);
                 else{
                     $fecha = $_POST['fecha'];
                     $lugar = $_POST['lugar'];
