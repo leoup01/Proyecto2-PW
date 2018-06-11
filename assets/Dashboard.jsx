@@ -243,12 +243,12 @@ class Dashboard extends React.Component {
                 </Col>
         		<Col sm="12" md="12" lg="4" xl="4">
                     <h2>Información de la página</h2>
-                      <DashboardCard imagen="assets/user-icon.png" title="Visita tu cuenta" result="Bienvenido" link="/micuenta"/>
-                      <DashboardCard imagen="assets/news-icon.png" title="Noticias" result={this.state.noticiasCount} link="/boletinesDetalle"/>
-                      <DashboardCard imagen="assets/boletin-icon.png" title="Boletines" result={this.state.boletinesCount} link="/boletinesDetalle"/>
-                      <DashboardCard imagen="assets/periodista-icon.png" title="Periodistas" result={this.state.periodistasCount} link="/periodistas"/>
-                      <DashboardCard imagen="assets/categorias-icon.png" title="Categorias" result={this.state.categoriasCount} link="/categorias"/>
-                      <DashboardCard imagen="assets/agencias-icon.png" title="Agencias" result={this.state.agenciasCount} link="/agencias"/>
+                      <DashboardCard imagen="assets/user-icon.png" title="Visita tu cuenta" result="Bienvenido" link="/micuenta.html"/>
+                      <DashboardCard imagen="assets/news-icon.png" title="Noticias" result={this.state.noticiasCount} link="/boletinesDetalle.html"/>
+                      <DashboardCard imagen="assets/boletin-icon.png" title="Boletines" result={this.state.boletinesCount} link="/boletinesDetalle.html"/>
+                      <DashboardCard imagen="assets/periodista-icon.png" title="Periodistas" result={this.state.periodistasCount} link="/periodistas.html"/>
+                      <DashboardCard imagen="assets/categorias-icon.png" title="Categorias" result={this.state.categoriasCount} link="/categorias.html"/>
+                      <DashboardCard imagen="assets/agencias-icon.png" title="Agencias" result={this.state.agenciasCount} link="/agencias.html"/>
 
         			     
         		</Col>

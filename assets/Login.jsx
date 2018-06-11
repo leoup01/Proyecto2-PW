@@ -50,7 +50,7 @@ class Login extends React.Component {
                    if(this.state.password === data[0].password){
                       localStorage.setItem('userIdLS', data[0].userId);
                       this.setState(byPropKey('error', ""));
-                      window.location.href = "/index";
+                      window.location.href = "/";
                    }
                    else{
                       this.setState(byPropKey('error', "Contraseña incorrecta."));
@@ -107,7 +107,7 @@ class Login extends React.Component {
 
           <hr/>
           <div className="center-flex">
-            <Button href="/signup" className="button-sm button-5 center-flex">No tiene una cuenta, Registrarse</Button>
+            <Button href="/signup.html" className="button-sm button-5 center-flex">No tiene una cuenta, Registrarse</Button>
           </div>
         </div>
       </div>

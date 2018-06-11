@@ -52,7 +52,7 @@ class SignUp extends React.Component {
                        })
     }).then((response) => {
             localStorage.setItem('regres', response.json());
-            window.location.href = "/login";
+            window.location.href = "/login.html";
            //this.props.handleChangeData();
            //console.log("INSERT");
            //console.log(this.props);
@@ -104,7 +104,7 @@ class SignUp extends React.Component {
 
           <hr/>
           <div className="center-flex">
-            <Button href="/login" className="button-sm button-5 center-flex">Ya tiene una cuenta, ingrese al sistema</Button>
+            <Button href="/login.html" className="button-sm button-5 center-flex">Ya tiene una cuenta, ingrese al sistema</Button>
           </div>
         </div>
       </div>

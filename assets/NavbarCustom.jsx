@@ -57,10 +57,10 @@ class NavbarCustom extends React.Component {
     const navbarItemsAdmin = (this.state.rol === 'Administrador')?
                     <Nav navbar>
                       <NavItem>
-                        <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
+                        <b><NavLink className="text-white" href="/agencias.html">Agencias</NavLink></b>
                       </NavItem>
                       <NavItem>
-                        <b><NavLink className="text-white" href="/usuarios">Usuarios</NavLink></b>
+                        <b><NavLink className="text-white" href="/usuarios.html">Usuarios</NavLink></b>
                       </NavItem>
                     </Nav>
                     :null;
@@ -71,29 +71,29 @@ class NavbarCustom extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
               <NavItem>
-                <b><NavLink className="text-white" href="/boletinesDetalle">Ver Boletines</NavLink></b>
+                <b><NavLink className="text-white" href="/boletinesDetalle.html">Ver Boletines</NavLink></b>
               </NavItem>
               <NavItem>
-                <b><NavLink className="text-white" href="/micuenta">Mi Cuenta</NavLink></b>
+                <b><NavLink className="text-white" href="/micuenta.html">Mi Cuenta</NavLink></b>
               </NavItem>
                 
               {
                 ((this.state.rol === 'Periodista') || (this.state.rol === 'Jefe de redacción') || (this.state.rol === 'Administrador'))?
                     <Nav navbar>
                       <NavItem>
-                        <b><NavLink className="text-white" href="/noticias">Noticias</NavLink></b>
+                        <b><NavLink className="text-white" href="/noticias.html">Noticias</NavLink></b>
                       </NavItem>
                       <NavItem>
-                        <b><NavLink className="text-white" href="/boletines">Boletines</NavLink></b>
+                        <b><NavLink className="text-white" href="/boletines.html">Boletines</NavLink></b>
                       </NavItem>
                       <NavItem>
-                        <b><NavLink className="text-white" href="/periodistas">Periodistas</NavLink></b>
+                        <b><NavLink className="text-white" href="/periodistas.html">Periodistas</NavLink></b>
                       </NavItem>
                       <NavItem>
-                        <b><NavLink className="text-white" href="/agencias">Agencias</NavLink></b>
+                        <b><NavLink className="text-white" href="/agencias.html">Agencias</NavLink></b>
                       </NavItem>
                       <NavItem>
-                        <b><NavLink className="text-white" href="/categorias">Categorías</NavLink></b>
+                        <b><NavLink className="text-white" href="/categorias.html">Categorías</NavLink></b>
                       </NavItem>
                     </Nav>
                     :null
@@ -102,7 +102,7 @@ class NavbarCustom extends React.Component {
                 (this.state.rol === 'Administrador')?
                     <Nav navbar>
                       <NavItem>
-                        <b><NavLink className="text-white" href="/usuarios">Usuarios</NavLink></b>
+                        <b><NavLink className="text-white" href="/usuarios.html">Usuarios</NavLink></b>
                       </NavItem>
                     </Nav>
                     :null
@@ -118,7 +118,7 @@ class NavbarCustom extends React.Component {
           			<Button className="btn btn-outline-success mb-2 mr-sm-2 mb-sm-0" type="button" onClick={this.handleSearch} >Search</Button>
         		  </Form>
               <NavItem>
-                <b><NavLink className="text-white button-sm button5" href="/login">Login</NavLink></b>
+                <b><NavLink className="text-white button-sm button5" href="/login.html">Login</NavLink></b>
               </NavItem>
             </Nav>
           </Collapse>
