@@ -181,15 +181,15 @@ class Estadisticas extends React.Component {
                             <Row className="appContainer">
                                     <Col sm="12" md="12" lg="4" xl="4">
                                         <h2>Noticias por Zona</h2>
-                                        <PieChart data={this.state.dataByZone} colors={["#92a8d1","#034f84", "#f7cac9", "#f7786b", "#b1cbbb"]} />
+                                        <PieChart data={this.state.dataByZone} colors={["#92a8d1","#034f84", "#f7cac9", "#f7786b", "#b1cbbb", "#ffef96","#50394c", "#b2b2b2", "#f4e1d2", "#618685"]} />
                                     </Col>
                                     <Col sm="12" md="12" lg="4" xl="4">
                                         <h2>Noticias por Categoría</h2>
-                                        <PieChart data={this.state.dataByCategory} colors={["#6b5b95","#feb236", "#d64161", "#ff7b25", "#b2ad7f"]}/>
+                                        <PieChart data={this.state.dataByCategory} colors={["#6b5b95","#feb236", "#d64161", "#ff7b25", "#b2ad7f", "#92a8d1","#034f84", "#f7cac9", "#f7786b", "#b1cbbb"]}/>
                                     </Col>
                                     <Col sm="12" md="12" lg="4" xl="4">
                                         <h2>Categorias Preferidas</h2>
-                                        <PieChart data={this.state.dataByPreference} donut={true} colors={["#ffef96","#50394c", "#b2b2b2", "#f4e1d2", "#618685"]}/>
+                                        <PieChart data={this.state.dataByPreference} donut={true} colors={["#ffef96","#50394c", "#b2b2b2", "#f4e1d2", "#618685","#6b5b95","#feb236", "#d64161", "#ff7b25", "#b2ad7f"]}/>
                                     </Col>
                             </Row>
                         </div>
