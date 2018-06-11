@@ -107,7 +107,7 @@ class Estadisticas extends React.Component {
         .then((data) => { 
             console.log(data);
             let dataAux = data.map((item,index) =>
-                [item.nombre,item.cantidad]
+                [item.zona,item.cantidad]
             );
             this.setState({dataByZone: dataAux });
         })
