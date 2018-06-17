@@ -9,8 +9,7 @@ Fabio Campos Rojas
 
 Para correr el proyecto se puede utilizar cualquiera de las siguientes opciones
 
-1. Visitar la página web https://leocortesq.000webhostapp.com/
-
+1. Visitar la página web https://prograwebfabio.000webhostapp.com/
 2. Copiar el contenido de la carpeta "codigo fuente" en la raiz de wamp o xamp,
 	 en caso de querer trabajar localmente.
 
